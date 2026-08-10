@@ -34,11 +34,18 @@
   <a href="assets/vision_smoke_i2v/gt_episode_000119_front_2s.mp4">gt_episode_000119_front_2s.mp4</a>
 </video>
 
+### GT（同 episode front，更长约 8s）
+
+![GT teleop 8s（GIF 预览）](assets/vision_smoke_i2v/gt_episode_000119_front_8s.gif)
+
+<video src="assets/vision_smoke_i2v/gt_episode_000119_front_8s.mp4" controls width="720" preload="metadata">
+  你的浏览器不支持 video 标签；请看上方 GIF，或下载
+  <a href="assets/vision_smoke_i2v/gt_episode_000119_front_8s.mp4">gt_episode_000119_front_8s.mp4</a>
+</video>
+
 条件首帧：
 
 ![I2V 条件首帧（ep119）](assets/vision_smoke_i2v/i2v_cond_first_frame.png)
-
-更长 GT 对照：[gt_episode_000119_front_8s.mp4](assets/vision_smoke_i2v/gt_episode_000119_front_8s.mp4)
 
 ---
 
@@ -262,7 +269,7 @@ python -m cosmos_framework.scripts.inference \
 | | 预测（I2V smoke） | GT（真机 teleop） |
 |--|-------------------|-------------------|
 | 页内预览 | [GIF](assets/vision_smoke_i2v/pred_i2v_vision_smoke.gif) / [mp4 ~79KB](assets/vision_smoke_i2v/pred_i2v_vision_smoke.mp4) | [GIF](assets/vision_smoke_i2v/gt_episode_000119_front_2s.gif) / [mp4 ~59KB](assets/vision_smoke_i2v/gt_episode_000119_front_2s.mp4) |
-| 更长对照 | — | [8s mp4](assets/vision_smoke_i2v/gt_episode_000119_front_8s.mp4) |
+| 更长对照 | — | [8s 预览页](assets/vision_smoke_i2v/gt_episode_000119_front_8s.md) / [GIF](assets/vision_smoke_i2v/gt_episode_000119_front_8s.gif) / [mp4 ~256KB](assets/vision_smoke_i2v/gt_episode_000119_front_8s.mp4) |
 | 条件 | 首帧 + caption | 真实后续运动 |
 | 用途 | 管线 smoke / 肉眼粗看 | 对照「真实臂与块如何动」 |
 
