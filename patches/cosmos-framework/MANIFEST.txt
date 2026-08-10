@@ -1,0 +1,6 @@
+# Lab-owned files → destinations inside COSMOS_FRAMEWORK_ROOT
+# Format: relative_src | relative_dst
+
+so101_lerobot_dataset.py | cosmos_framework/data/generator/action/datasets/so101_lerobot_dataset.py
+so101_stack_3cam_meanstd.json | cosmos_framework/data/generator/action/normalizer_stats/so101_stack_3cam_meanstd.json
+action_policy_so101_edge.py | cosmos_framework/configs/base/experiment/action/posttrain_config/action_policy_so101_edge.py

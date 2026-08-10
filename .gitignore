@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.ruff_cache/
+.pytest_cache/
+
+# Data / checkpoints / outputs (keep local, not in git)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+checkpoints/*
+!checkpoints/.gitkeep
+outputs/*
+!outputs/.gitkeep
+wandb/
+*.safetensors
+*.pth
+*.hbm
+*.mp4
+
+# Env / secrets
+.env
+.env.*
+*.token
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp

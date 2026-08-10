@@ -1,0 +1,22 @@
+[project]
+name = "cosmos-edge-lab"
+version = "0.1.0"
+description = "Personal WAM experiments on Cosmos3-Edge (SO-101 stack / Physical AI)"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "upnana" }]
+dependencies = [
+  # Runtime training stack is the local NVIDIA cosmos-framework install.
+  # This lab owns experiment recipes, data adapters, and analysis — not the trainer core.
+]
+
+[project.optional-dependencies]
+dev = ["ruff", "pytest"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cosmos_edge_lab*"]
