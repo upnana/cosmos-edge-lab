@@ -39,9 +39,28 @@ pred vision.mp4  ↔  GT front clip
 
 ---
 
-## 2. SFT 配置（`sft_config`）
+## 2. SFT 配置（`sft_config`）与加载链
 
-### 2.1 Lab 侧 TOML（真正改超参的地方）
+### 2.1 配置如何接到训练引擎
+
+```text
+configs/vision_sft_edge.toml          ← lab 超参源（你改这里）
+        │ launch_vision_sft.sh 复制
+        ▼
+examples/toml/sft_config/vision_sft_edge_lab.toml
+        │ _sft_launcher_common.sh → torchrun train
+        ▼
+load_experiment_from_toml(...)        ← cosmos_framework/configs/toml_config/sft_config.py
+        │ 覆盖 Hydra experiment
+        ▼
+experiment=vision_sft_edge            ← configs/base/experiment/sft/vision_sft_edge.py
+        │ model.config =
+        ▼
+EDGE_MODEL_CONFIG                     ← .../sft/models/edge_model_config.py
+（Nemotron-2B-Dense-VL / Cosmos3-Edge；本配方强制 action_gen=False）
+```
+
+### 2.2 Lab 侧 TOML（真正改超参的地方）
 
 - Lab：[`configs/vision_sft_edge.toml`](../configs/vision_sft_edge.toml)
 - 启动：[`scripts/launch_vision_sft.sh`](../scripts/launch_vision_sft.sh)  
@@ -49,14 +68,19 @@ pred vision.mp4  ↔  GT front clip
   `$COSMOS_FRAMEWORK_ROOT/examples/toml/sft_config/vision_sft_edge_lab.toml`，  
   并写一个 `examples/launch_sft_vision_edge_lab.sh`（保证 `_sft_launcher_common.sh` 的 WORKDIR 正确）。
 
-### 2.2 Framework 侧 experiment 注册名
+### 2.3 Framework 侧 experiment / 模型配置
 
-- Hydra experiment：`vision_sft_edge`
-- 定义：`cosmos-framework/cosmos_framework/configs/base/experiment/sft/vision_sft_edge.py`
-- TOML 加载：`cosmos_framework.configs.toml_config.sft_config.load_experiment_from_toml`
-- 模型底座：`EDGE_MODEL_CONFIG`（Nemotron-2B-Dense-VL / Cosmos3-Edge，`vision_gen=True`）
+| 角色 | 路径 |
+|------|------|
+| Hydra experiment 名 | `vision_sft_edge` |
+| Experiment 定义 | `cosmos_framework/configs/base/experiment/sft/vision_sft_edge.py` |
+| TOML→experiment | `cosmos_framework/configs/toml_config/sft_config.py` → `load_experiment_from_toml` |
+| Edge 模型字典 | `.../sft/models/edge_model_config.py` → `EDGE_MODEL_CONFIG` |
+| 训练入口 | `python -m cosmos_framework.scripts.train` |
 
-### 2.3 本次 smoke 实际生效的关键项
+注意：framework 默认 `optimizer.lr=5e-4`；**lab TOML 写成 `1e-4`**，以 lab 为准。
+
+### 2.4 本次 smoke 实际生效的关键项
 
 | 项 | TOML / 默认 | Smoke 覆盖 |
 |----|-------------|------------|
@@ -103,8 +127,8 @@ keys_to_select = [
 
 | `keys_to_select` | 含义 | 对应代码（`cosmos-framework` 内） |
 |------------------|------|-----------------------------------|
-| `moe_gen` | MoT 生成塔权重（`*_moe_gen`：Q/K/V/O、MLP、layernorm 等） | `cosmos_framework/model/generator/mot/unified_mot.py` → `PackedAttentionMoT` / `MoTDecoderLayer` |
-| `time_embedder` | 扩散时间步嵌入 | `.../mot/modeling_utils.py` → `class TimestepEmbedder`；挂载于 `.../mot/cosmos3_vfm_network.py` |
+| `moe_gen` | MoT 生成塔权重（`*_moe_gen`：Q/K/V/O、MLP、layernorm 等） | `model/generator/mot/unified_mot.py` → `PackedAttentionMoT` / `MoTDecoderLayer`（如 `q_proj_moe_gen`、`mlp_moe_gen`） |
+| `time_embedder` | 扩散时间步嵌入 | `mot/modeling_utils.py` → `class TimestepEmbedder`；在 `mot/cosmos3_vfm_network.py` 挂载为 `self.time_embedder` |
 | `vae2llm` | VAE latent → LLM hidden | `cosmos3_vfm_network.py`：`self.vae2llm = nn.Linear(...)` |
 | `llm2vae` | LLM hidden → VAE latent | 同上：`self.llm2vae = nn.Linear(...)` |
 | `k_norm_und_for_gen` | und→gen 交叉注意力前的 und-K RMSNorm | `unified_mot.py` → `PackedAttentionMoT.k_norm_und_for_gen` |
