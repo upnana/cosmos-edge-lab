@@ -20,6 +20,10 @@ wandb/
 *.pth
 *.hbm
 *.mp4
+# Allow small smoke/eval media checked into docs
+!docs/assets/**/*.mp4
+!docs/assets/**/*.png
+!docs/assets/**/*.json
 
 # Env / secrets
 .env

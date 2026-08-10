@@ -38,6 +38,13 @@ fi
 export SO101_ROOT EDGE_HF BASE_CHECKPOINT_PATH WAN_VAE_PATH IMAGINAIRE_OUTPUT_ROOT NPROC_PER_NODE
 export DATASET_PATH="${DATASET_PATH:-$LAB_ROOT/data/processed/stack3cam_vision_sft}"
 
+# Local proxy for any residual Hugging Face processor downloads.
+export https_proxy="${https_proxy:-http://127.0.0.1:7897}"
+export http_proxy="${http_proxy:-http://127.0.0.1:7897}"
+export HTTPS_PROXY="$https_proxy"
+export HTTP_PROXY="$http_proxy"
+export HF_HUB_DISABLE_XET=1
+
 echo "LAB_ROOT=$LAB_ROOT"
 echo "COSMOS_FRAMEWORK_ROOT=$COSMOS_FRAMEWORK_ROOT"
 echo "SO101_ROOT=$SO101_ROOT"

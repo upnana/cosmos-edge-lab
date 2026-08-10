@@ -20,14 +20,26 @@ export OUTPUT_ROOT="${OUTPUT_ROOT:-$LAB_ROOT/outputs/train}"
 FW_TOML="$COSMOS_FRAMEWORK_ROOT/examples/toml/sft_config/action_policy_so101_edge_lab.toml"
 cp -f "$LAB_ROOT/configs/action_policy_so101_edge.toml" "$FW_TOML"
 
-EXTRA_DATASET_CHECK='[[ -f "$SO101_ROOT/meta/info.json" ]] || { echo "ERROR: missing $SO101_ROOT/meta/info.json" >&2; exit 1; }'
-
+FW_LAUNCH="$COSMOS_FRAMEWORK_ROOT/examples/launch_sft_action_policy_so101_edge_lab.sh"
+cat > "$FW_LAUNCH" <<EOF
+#!/usr/bin/env bash
+set -euo pipefail
+TOML_FILE="examples/toml/sft_config/action_policy_so101_edge_lab.toml"
+: "\${SO101_ROOT:=$SO101_ROOT}"
+: "\${DATASET_PATH:=$SO101_ROOT}"
+: "\${BASE_CHECKPOINT_PATH:=$BASE_CHECKPOINT_PATH}"
+: "\${WAN_VAE_PATH:=$WAN_VAE_PATH}"
+: "\${NPROC_PER_NODE:=$NPROC_PER_NODE}"
+: "\${OUTPUT_ROOT:=$OUTPUT_ROOT}"
+: "\${IMAGINAIRE_OUTPUT_ROOT:=$IMAGINAIRE_OUTPUT_ROOT}"
+EXTRA_DATASET_CHECK='[[ -f "\$SO101_ROOT/meta/info.json" ]] || { echo "ERROR: missing \$SO101_ROOT/meta/info.json" >&2; exit 1; }'
 TAIL_OVERRIDES=(
   job.name=stack3cam_action_policy_edge
-  ${EXTRA_TAIL_OVERRIDES:-}
+  \${EXTRA_TAIL_OVERRIDES:-}
 )
+source "\$(dirname "\${BASH_SOURCE[0]}")/_sft_launcher_common.sh"
+EOF
+chmod +x "$FW_LAUNCH"
 
-TOML_FILE="examples/toml/sft_config/action_policy_so101_edge_lab.toml"
-cd "$COSMOS_FRAMEWORK_ROOT"
-# shellcheck disable=SC1091
-source "$COSMOS_FRAMEWORK_ROOT/examples/_sft_launcher_common.sh"
+echo ">>> launching Action-Policy SFT via $FW_LAUNCH"
+bash "$FW_LAUNCH"

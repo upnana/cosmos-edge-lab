@@ -1,0 +1,5 @@
+{
+  "model_mode": "image2video",
+  "prompt": "{\"subjects\": [{\"description\": \"A SO-101 robotic arm with a parallel gripper\", \"action\": \"stack the blocks from bottom to top white then blue then black\"}], \"background_setting\": \"An indoor tabletop workspace with colored stacking blocks\", \"cinematography\": {\"camera_motion\": \"static\", \"framing\": \"medium shot\", \"camera_angle\": \"third-person front view\"}, \"actions\": [{\"time\": \"0:00-0:08\", \"description\": \"stack the blocks from bottom to top white then blue then black\"}], \"temporal_caption\": \"A SO-101 robotic arm performs the task: stack the blocks from bottom to top white then blue then black. The camera is static and shows the arm manipulating colored blocks on a tabletop.\", \"resolution\": {\"H\": 480, \"W\": 640}, \"aspect_ratio\": \"640,480\", \"duration\": \"8s\", \"fps\": 30}",
+  "vision_path": "/home/july/cosmos-edge-lab/outputs/eval_vision_smoke/first_frame.png"
+}

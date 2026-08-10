@@ -72,6 +72,33 @@ class SO101LeRobotDataset(ActionBaseDataset):
     def _stats_path(cls) -> Path:
         return _NORMALIZER_PATH
 
+    def get_shuffle_blocks(self) -> list[tuple[int, int]]:
+        """Per-episode ``(start, length)`` flat-index blocks for iterable shuffle."""
+        n = len(self)
+        if n <= 0:
+            return []
+        blocks: list[tuple[int, int]] = []
+        cur_ep: int | None = None
+        start = 0
+        length = 0
+        for idx in range(n):
+            row_idx = int(idx) * self._sample_stride
+            ep = int(self._rows[row_idx]["episode_index"])
+            if cur_ep is None:
+                cur_ep = ep
+                start = idx
+                length = 1
+            elif ep == cur_ep:
+                length += 1
+            else:
+                blocks.append((start, length))
+                cur_ep = ep
+                start = idx
+                length = 1
+        if length > 0:
+            blocks.append((start, length))
+        return blocks
+
     def __getitem__(self, idx: int) -> dict[str, Any]:
         mode = self._choose_mode()
         row_idx = int(idx) * self._sample_stride

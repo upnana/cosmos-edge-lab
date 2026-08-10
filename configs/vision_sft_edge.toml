@@ -28,7 +28,7 @@ data_parallel_shard_degree      = -1                     # -1 = auto from WORLD_
 data_parallel_replicate_degree  = 1
 
 [model.compile]
-enabled                         = true                   # was [model.parallelism].use_torch_compile
+enabled                         = false                  # 1xH100 smoke/lab default; avoid torch.compile cold start
 compile_dynamic                 = true
 
 [model.activation_checkpointing]

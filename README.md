@@ -39,6 +39,7 @@ Two tracks on the same base (**Cosmos3-Edge**):
 | [`docs/VISION_VS_ACTION_SFT.md`](docs/VISION_VS_ACTION_SFT.md) | How Vision vs Action are trained |
 | [`docs/CODE_MAP.md`](docs/CODE_MAP.md) | Where code lives / what to edit |
 | [`docs/FULL_SFT_VS_LORA.md`](docs/FULL_SFT_VS_LORA.md) | Full module SFT vs LoRA (~120 ep) |
+| [`docs/VISION_SMOKE_EXPORT_I2V.md`](docs/VISION_SMOKE_EXPORT_I2V.md) | Vision smoke→导出→I2V（中文，含 pred/GT 视频） |
 | [`notes/analysis_2026-08-10.md`](notes/analysis_2026-08-10.md) | Session summary |
 
 Recipe folder: [`experiments/stack3cam_wam/`](experiments/stack3cam_wam/)
