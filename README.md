@@ -30,7 +30,17 @@ Two tracks on the same base (**Cosmos3-Edge**):
 1. **Vision SFT** — front-camera world / video dynamics  
 2. **Action-policy SFT** — WAM-style action chunks (front+wrist)
 
-Design notes: [`docs/EXPERIMENT_DESIGN.md`](docs/EXPERIMENT_DESIGN.md)  
+### Docs
+
+| Doc | Topic |
+|-----|--------|
+| [`docs/EXPERIMENT_DESIGN.md`](docs/EXPERIMENT_DESIGN.md) | Hypothesis & success criteria |
+| [`docs/COSMOS_ARCHITECTURE.md`](docs/COSMOS_ARCHITECTURE.md) | Cosmos3 MoT / Edge network |
+| [`docs/VISION_VS_ACTION_SFT.md`](docs/VISION_VS_ACTION_SFT.md) | How Vision vs Action are trained |
+| [`docs/CODE_MAP.md`](docs/CODE_MAP.md) | Where code lives / what to edit |
+| [`docs/FULL_SFT_VS_LORA.md`](docs/FULL_SFT_VS_LORA.md) | Full module SFT vs LoRA (~120 ep) |
+| [`notes/analysis_2026-08-10.md`](notes/analysis_2026-08-10.md) | Session summary |
+
 Recipe folder: [`experiments/stack3cam_wam/`](experiments/stack3cam_wam/)
 
 Baseline (same task, different family): π0 3-cam on LeRobot (`upna/pi0_stack_white_blue_black_3cam_*`).
