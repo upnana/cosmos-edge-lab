@@ -11,6 +11,37 @@
 
 ---
 
+## 0. 打开本页即可预览（预测 vs GT）
+
+> 直接打开本 Markdown 页面即可浏览；无需点进单独的 `.mp4` 文件页。  
+> GitHub 对大体积 / 非 baseline H.264 的 blob 预览常失败，故此处用 **页内 GIF + 小体积 mp4**。
+
+### 预测（I2V smoke，ep119 首帧条件）
+
+![预测 I2V（GIF 预览）](assets/vision_smoke_i2v/pred_i2v_vision_smoke.gif)
+
+<video src="assets/vision_smoke_i2v/pred_i2v_vision_smoke.mp4" controls width="720" preload="metadata">
+  你的浏览器不支持 video 标签；请看上方 GIF，或下载
+  <a href="assets/vision_smoke_i2v/pred_i2v_vision_smoke.mp4">pred_i2v_vision_smoke.mp4</a>
+</video>
+
+### GT（同 episode front，对齐约 2s）
+
+![GT teleop（GIF 预览）](assets/vision_smoke_i2v/gt_episode_000119_front_2s.gif)
+
+<video src="assets/vision_smoke_i2v/gt_episode_000119_front_2s.mp4" controls width="720" preload="metadata">
+  你的浏览器不支持 video 标签；请看上方 GIF，或下载
+  <a href="assets/vision_smoke_i2v/gt_episode_000119_front_2s.mp4">gt_episode_000119_front_2s.mp4</a>
+</video>
+
+条件首帧：
+
+![I2V 条件首帧（ep119）](assets/vision_smoke_i2v/i2v_cond_first_frame.png)
+
+更长 GT 对照：[gt_episode_000119_front_8s.mp4](assets/vision_smoke_i2v/gt_episode_000119_front_8s.mp4)
+
+---
+
 ## 1. 总览
 
 ```text
@@ -225,21 +256,19 @@ python -m cosmos_framework.scripts.inference \
 
 ## 6. 预测视频 vs GT 视频
 
-同源 episode：**`episode_000119_clip000`**（front cam，任务：白→蓝→黑叠块）。
+同源 episode：**`episode_000119_clip000`**（front cam，任务：白→蓝→黑叠块）。  
+**页内预览见第 0 节**（打开本文即可播）。
 
 | | 预测（I2V smoke） | GT（真机 teleop） |
 |--|-------------------|-------------------|
-| 文件 | [pred_i2v_vision_smoke.mp4](assets/vision_smoke_i2v/pred_i2v_vision_smoke.mp4) | [gt_episode_000119_front_2s.mp4](assets/vision_smoke_i2v/gt_episode_000119_front_2s.mp4)（对齐约 2s） / [gt_…_8s.mp4](assets/vision_smoke_i2v/gt_episode_000119_front_8s.mp4)（更长对照） |
-| 条件 | 上表首帧 + caption | 真实后续运动 |
+| 页内预览 | [GIF](assets/vision_smoke_i2v/pred_i2v_vision_smoke.gif) / [mp4 ~79KB](assets/vision_smoke_i2v/pred_i2v_vision_smoke.mp4) | [GIF](assets/vision_smoke_i2v/gt_episode_000119_front_2s.gif) / [mp4 ~59KB](assets/vision_smoke_i2v/gt_episode_000119_front_2s.mp4) |
+| 更长对照 | — | [8s mp4](assets/vision_smoke_i2v/gt_episode_000119_front_8s.mp4) |
+| 条件 | 首帧 + caption | 真实后续运动 |
 | 用途 | 管线 smoke / 肉眼粗看 | 对照「真实臂与块如何动」 |
-
-条件首帧：
-
-![I2V 条件首帧（ep119）](assets/vision_smoke_i2v/i2v_cond_first_frame.png)
 
 **肉眼观察（10 iter）：** 场景身份大体保持（桌面、三色块、夹爪），夹爪附近有轻微运动；**远未复现** GT 的抓取/叠放时序。这符合「只训了 10 step」的预期。
 
-> GitHub 网页对 `.mp4` 可能需点进文件页播放；也可 `git clone` 后本地打开 `docs/assets/vision_smoke_i2v/`。
+> 若单独打开旧版大体积 `.mp4` 的 blob 页，GitHub 可能提示 *can't show files that are this big*。请回到本文第 0 节，或打开已重编码的小体积 mp4 / GIF。
 
 ---
 
