@@ -1,52 +1,47 @@
-# Experiment design — Stack3Cam WAM on Cosmos3-Edge
+# 实验设计 — Stack3Cam WAM on Cosmos3-Edge
 
-## Question
+## 问题
 
-Can a **World-Action Model** based on **Cosmos3-Edge**, post-trained on my own
-SO-101 teleop (`stack_3blocks_white_blue_black_3cam`), learn both:
+基于 **Cosmos3-Edge** 的 **World-Action Model**，在我自己的 SO-101 遥操作数据
+（`stack_3blocks_white_blue_black_3cam`）上后训练之后，能否同时学到：
 
-1. **World dynamics** (front-camera video / Vision SFT), and
-2. **Action policy** (6D absolute joints, front+wrist),
+1. **世界动力学**（前视相机视频 / Vision SFT），以及
+2. **动作策略**（6D 绝对关节，前视+腕部），
 
-well enough to transfer toward edge deployment — without being “just another
-clone of an upstream recipe”?
+并足够支撑后续边缘部署方向 —— 而不是「又一个上游配方的克隆」？
 
-This lab owns that question. NVIDIA `cosmos-framework` is only the **trainer
-engine**.
+这个问题由本 lab 拥有。NVIDIA `cosmos-framework` 只是**训练引擎**。
 
-## Hypothesis
+## 假设
 
-- Vision SFT on front-cam clips teaches scene / object dynamics for the
-  white→blue→black stack task.
-- Action-policy SFT in WAM mode (video + state → action chunks) teaches
-  executable joint trajectories.
-- Dual post-training is more useful for later sim/real loop than policy-only
-  (π0) or vision-only.
+- 在前视 clip 上做 Vision SFT，能教会白→蓝→黑叠块任务的场景 / 物体动态。
+- 以 WAM 模式做 Action-policy SFT（视频 + 状态 → 动作块），能教会可执行的关节轨迹。
+- 双轨后训练，对后续 sim/real 闭环，比纯策略（π0）或纯视觉更有用。
 
-## Variables (owned by this repo)
+## 变量（本仓库掌控）
 
-| Knob | v1 choice | Why |
-|------|-----------|-----|
-| Base | Cosmos3-Edge | Smaller edge-oriented WAM vs Nano/Super |
-| Robot | SO-101 follower, 6D abs joints | Matches my teleop |
-| Cameras | Vision: front; Action: front+wrist concat | Side kept for later ablation |
-| Norm | mean/std from dataset `stats.json` | Stable absolute joints |
-| Hardware | 1×H100 | Lab defaults in TOMLs |
-| Control | π0 3-cam (LeRobot) as baseline | Same dataset, different family |
+| 旋钮 | v1 选择 | 原因 |
+|------|---------|------|
+| 底座 | Cosmos3-Edge | 相对 Nano/Super 更小、偏边缘的 WAM |
+| 机器人 | SO-101 follower，6D 绝对关节 | 与我的遥操作一致 |
+| 相机 | Vision：前视；Action：前视+腕部拼接 | 侧视留给后续消融 |
+| 归一化 | 来自数据集 `stats.json` 的 mean/std | 稳定绝对关节 |
+| 硬件 | 1×H100 | TOML 里的 lab 默认 |
+| 对照 | π0 3-cam（LeRobot）作基线 | 同数据、不同模型族 |
 
-## Non-goals (v1)
+## 非目标（v1）
 
-- Not shipping a full RDK / HBM deploy pipeline in this repo yet.
-- Not claiming SOTA vs π0 — only a comparable personal WAM track.
-- Not forking cosmos-framework; patches stay under `patches/` and sync in.
+- 本仓库暂不交付完整 RDK / HBM 部署流水线。
+- 不宣称对 π0 的 SOTA —— 只做可对比的个人 WAM 轨道。
+- 不 fork cosmos-framework；补丁放在 `patches/`，再 sync 进去。
 
-## Success criteria (v1)
+## 成功标准（v1）
 
-1. Vision smoke: loss decreases over ~100 iters, checkpoints write under `outputs/`.
-2. Action smoke: 10-iter run completes with valid action heads.
-3. Full-ish runs finish with saved DCP; qualitative video / rollout notes in `notes/`.
-4. Written comparison vs π0 3-cam (same stack task) in `notes/`.
+1. Vision smoke：约 100 iter 内 loss 下降，checkpoint 写到 `outputs/`。
+2. Action smoke：10-iter 跑通，动作头有效。
+3. 较长 run 结束并保存 DCP；在 `notes/` 留下定性视频 / rollout 记录。
+4. 在 `notes/` 写下与 π0 3-cam（同叠块任务）的文字对比。
 
-## Experiment folder
+## 实验目录
 
-See `experiments/stack3cam_wam/` for the concrete recipe pointers and run log template.
+具体配方指针与运行日志模板见 `experiments/stack3cam_wam/`。

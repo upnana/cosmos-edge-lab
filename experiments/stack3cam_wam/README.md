@@ -1,24 +1,25 @@
 # stack3cam_wam
 
-Personal WAM track on **Cosmos3-Edge** using my SO-101 stack-3-blocks 3-cam dataset.
+基于 **Cosmos3-Edge** 的个人 WAM 轨道，使用我的 SO-101 三色叠块 3 相机数据集。
 
-## Data
+## 数据
 
-- Raw LeRobot v3: `/home/july/datasets/stack_3blocks_white_blue_black_3cam`
-- Vision processed: `data/processed/stack3cam_vision_sft/` (gitignored)
-- Action reads LeRobot root directly via SO101 adapter (patched into framework)
+- 原始 LeRobot v3：`/home/july/datasets/stack_3blocks_white_blue_black_3cam`
+- Vision 处理后：`data/processed/stack3cam_vision_sft/`（已 gitignore）
+- Action 经 SO101 适配器（patch 进 framework）直接读 LeRobot 根目录
 
-## Recipes
+## 配方
 
-| Track | Config | Launch |
-|-------|--------|--------|
+| 轨道 | 配置 | 启动 |
+|------|------|------|
 | Vision SFT | `configs/vision_sft_edge.toml` | `scripts/launch_vision_sft.sh` |
 | Action policy | `configs/action_policy_so101_edge.toml` | `scripts/launch_action_policy.sh` |
 
-## Run log (fill as you go)
+## 运行日志（边跑边填）
 
-| Date | Track | Steps | Notes |
-|------|-------|-------|-------|
-| | | | |
+| 日期 | 轨道 | 步数 | 备注 |
+|------|------|------|------|
+| 2026-08-10 | Vision smoke | 10 | loss≈1.56；已导出并跑 I2V，见 `docs/VISION_SMOKE_EXPORT_I2V.md` |
+| 2026-08-10 | Action smoke | 10 | loss≈20→15.6；ckpt `iter_000000010` |
 
-Baseline π0 (same task): Hugging Face `upna/pi0_stack_white_blue_black_3cam_060000` (and later 80k).
+基线 π0（同任务）：Hugging Face `upna/pi0_stack_white_blue_black_3cam_060000`（及后续 80k）。

@@ -1,56 +1,55 @@
-# Where the code lives (and what to edit)
+# 代码在哪、该改哪里
 
-Lab scripts are **entrypoints**. Real logic sits in lab Python/TOML/patches;
-`cosmos-framework` is the runtime engine.
+Lab 脚本是**入口**。真正逻辑在 lab 的 Python / TOML / patches；
+`cosmos-framework` 是运行时引擎。
 
 ## `prepare_vision_data.sh`
 
-Path: `scripts/prepare_vision_data.sh`
+路径：`scripts/prepare_vision_data.sh`
 
-| Role | Path |
+| 角色 | 路径 |
 |------|------|
-| Entrypoint | `scripts/prepare_vision_data.sh` |
-| Converter (edit this) | `scripts/convert_lerobot_to_vision_sft.py` |
-| Upstream reference | `cosmos-framework/tools/lerobot3cam_to_vision_sft.py` |
-| Default input | `SO101_ROOT` → stack3cam LeRobot root |
-| Default output | `data/processed/stack3cam_vision_sft/` |
+| 入口 | `scripts/prepare_vision_data.sh` |
+| 转换器（改这里） | `scripts/convert_lerobot_to_vision_sft.py` |
+| 上游参考 | `cosmos-framework/tools/lerobot3cam_to_vision_sft.py` |
+| 默认输入 | `SO101_ROOT` → stack3cam LeRobot 根目录 |
+| 默认输出 | `data/processed/stack3cam_vision_sft/` |
 
-Edit tips:
+修改提示：
 
-- Camera / paths → env (`CAMERA`, `SO101_ROOT`) or the shell script  
-- Clip length, captions, splits → **`convert_lerobot_to_vision_sft.py`**
+- 相机 / 路径 → 环境变量（`CAMERA`、`SO101_ROOT`）或 shell 脚本  
+- clip 长度、caption、划分 → **`convert_lerobot_to_vision_sft.py`**
 
 ## `launch_vision_sft.sh`
 
-| Role | Path |
+| 角色 | 路径 |
 |------|------|
-| Entrypoint | `scripts/launch_vision_sft.sh` |
-| Hyperparams | `configs/vision_sft_edge.toml` |
-| Runtime | Copies TOML into framework, sources `_sft_launcher_common.sh` |
+| 入口 | `scripts/launch_vision_sft.sh` |
+| 超参 | `configs/vision_sft_edge.toml` |
+| 运行时 | 把 TOML 复制进 framework，再 source `_sft_launcher_common.sh` |
 
-Vision does **not** use SO101 patches; it uses the stock `vision_sft_edge`
-experiment + our data/TOML.
+Vision **不**依赖 SO101 patches；用官方 `vision_sft_edge` experiment + 我们的数据/TOML。
 
 ## `launch_action_policy.sh`
 
-Path: `scripts/launch_action_policy.sh`
+路径：`scripts/launch_action_policy.sh`
 
-Flow: `sync_patches.sh` → copy lab TOML into framework → `_sft_launcher_common.sh`.
+流程：`sync_patches.sh` → 把 lab TOML 拷进 framework → `_sft_launcher_common.sh`。
 
-| Role | Edit in lab |
+| 角色 | 在 lab 里改 |
 |------|-------------|
-| Hyperparams | `configs/action_policy_so101_edge.toml` |
-| Dataset reader (cams, 6D, concat) | `patches/cosmos-framework/so101_lerobot_dataset.py` |
+| 超参 | `configs/action_policy_so101_edge.toml` |
+| 数据集读取（相机、6D、拼接） | `patches/cosmos-framework/so101_lerobot_dataset.py` |
 | Action mean/std | `patches/cosmos-framework/so101_stack_3cam_meanstd.json` |
-| Experiment (WAM dataloader) | `patches/cosmos-framework/action_policy_so101_edge.py` |
+| Experiment（WAM dataloader） | `patches/cosmos-framework/action_policy_so101_edge.py` |
 
-After editing patches:
+改完 patches 后：
 
 ```bash
 bash scripts/sync_patches.sh
 ```
 
-Synced destinations inside `COSMOS_FRAMEWORK_ROOT`:
+同步到 `COSMOS_FRAMEWORK_ROOT` 内的目标：
 
 ```
 cosmos_framework/data/generator/action/datasets/so101_lerobot_dataset.py
@@ -58,17 +57,15 @@ cosmos_framework/data/generator/action/normalizer_stats/so101_stack_3cam_meanstd
 cosmos_framework/configs/base/experiment/action/posttrain_config/action_policy_so101_edge.py
 ```
 
-`sync_patches.sh` also ensures `domain_utils.py` has `so101_follower`,
-`action_sft_dataset.py` has `get_action_so101_sft_dataset`, and `config.py`
-registers the experiment.
+`sync_patches.sh` 还会确保 `domain_utils.py` 有 `so101_follower`、
+`action_sft_dataset.py` 有 `get_action_so101_sft_dataset`，以及 `config.py` 注册该 experiment。
 
-**Rule:** change lab patch sources, then sync. Avoid hand-editing only the
-framework copy (easy to lose on pull/reinstall).
+**原则：** 改 lab 里的 patch 源，再 sync。不要只手改 framework 副本（一 pull/重装就丢）。
 
-## Ownership diagram
+## 所有权示意
 
 ```
-cosmos-edge-lab/                          ← edit here
+cosmos-edge-lab/                          ← 在这里改
 ├── scripts/prepare_vision_data.sh
 ├── scripts/convert_lerobot_to_vision_sft.py
 ├── scripts/launch_vision_sft.sh
@@ -77,6 +74,6 @@ cosmos-edge-lab/                          ← edit here
 └── patches/cosmos-framework/*
          │ sync_patches.sh
          ▼
-cosmos-framework/                         ← engine
+cosmos-framework/                         ← 引擎
 └── examples/_sft_launcher_common.sh      ← torchrun train
 ```

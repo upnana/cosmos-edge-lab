@@ -1,107 +1,106 @@
 # cosmos-edge-lab
 
-**Personal World-Action-Model (WAM) experiments on Cosmos3-Edge** — not a fork of someone else’s recipe dump.
+**基于 Cosmos3-Edge 的个人 World-Action-Model（WAM）实验仓库** —— 不是别人配方的简单拷贝。
 
-Owner: [upnana](https://github.com/upnana)  
-Remote: https://github.com/upnana/cosmos-edge-lab
+所有者：[upnana](https://github.com/upnana)  
+远程仓库：https://github.com/upnana/cosmos-edge-lab
 
-This repo owns:
+本仓库负责：
 
-- experiment questions, hypotheses, and run logs
-- SO-101 / stack-3cam data adapters and normalizers
-- Vision SFT + Action-policy TOMLs tuned for **1×H100 + Cosmos3-Edge**
-- launch / convert scripts
+- 实验问题、假设与运行记录
+- SO-101 / stack-3cam 数据适配与归一化
+- 面向 **1×H100 + Cosmos3-Edge** 调好的 Vision SFT / Action-policy TOML
+- 启动 / 转换脚本
 
-It does **not** own the trainer core. Training still runs through a local
-[NVIDIA cosmos-framework](https://github.com/NVIDIA/cosmos-framework) install
-(default: `../cosmos-framework`). Lab patches sync in via `scripts/sync_patches.sh`.
+**不**包含训练引擎核心。训练仍通过本地
+[NVIDIA cosmos-framework](https://github.com/NVIDIA/cosmos-framework)
+（默认：`../cosmos-framework`）运行。Lab 补丁用 `scripts/sync_patches.sh` 同步进去。
 
 ```
-cosmos-edge-lab/          ← your science
-../cosmos-framework/      ← engine (external)
+cosmos-edge-lab/          ← 你的实验科学
+../cosmos-framework/      ← 引擎（外部依赖）
 ```
 
-## First experiment: `stack3cam_wam`
+## 首个实验：`stack3cam_wam`
 
-Dataset: SO-101 teleop `stack_3blocks_white_blue_black_3cam` (LeRobot v3, 3 cams, 6D joints).
+数据：SO-101 遥操作 `stack_3blocks_white_blue_black_3cam`（LeRobot v3，3 相机，6D 关节）。
 
-Two tracks on the same base (**Cosmos3-Edge**):
+同一底座（**Cosmos3-Edge**）上两条线：
 
-1. **Vision SFT** — front-camera world / video dynamics  
-2. **Action-policy SFT** — WAM-style action chunks (front+wrist)
+1. **Vision SFT** —— 前视相机世界 / 视频动力学  
+2. **Action-policy SFT** —— WAM 风格动作块（前视+腕部）
 
-### Docs
+### 文档
 
-| Doc | Topic |
-|-----|--------|
-| [`docs/EXPERIMENT_DESIGN.md`](docs/EXPERIMENT_DESIGN.md) | Hypothesis & success criteria |
-| [`docs/COSMOS_ARCHITECTURE.md`](docs/COSMOS_ARCHITECTURE.md) | Cosmos3 MoT / Edge network |
-| [`docs/VISION_VS_ACTION_SFT.md`](docs/VISION_VS_ACTION_SFT.md) | How Vision vs Action are trained |
-| [`docs/CODE_MAP.md`](docs/CODE_MAP.md) | Where code lives / what to edit |
-| [`docs/FULL_SFT_VS_LORA.md`](docs/FULL_SFT_VS_LORA.md) | Full module SFT vs LoRA (~120 ep) |
-| [`docs/VISION_SMOKE_EXPORT_I2V.md`](docs/VISION_SMOKE_EXPORT_I2V.md) | Vision smoke→导出→I2V（中文；打开文档页即可内嵌预览 pred/GT） |
-| [`notes/analysis_2026-08-10.md`](notes/analysis_2026-08-10.md) | Session summary |
+| 文档 | 主题 |
+|------|------|
+| [`docs/EXPERIMENT_DESIGN.md`](docs/EXPERIMENT_DESIGN.md) | 假设与成功标准 |
+| [`docs/COSMOS_ARCHITECTURE.md`](docs/COSMOS_ARCHITECTURE.md) | Cosmos3 MoT / Edge 网络结构 |
+| [`docs/VISION_VS_ACTION_SFT.md`](docs/VISION_VS_ACTION_SFT.md) | Vision 与 Action 如何训练 |
+| [`docs/CODE_MAP.md`](docs/CODE_MAP.md) | 代码位置 / 改哪里 |
+| [`docs/FULL_SFT_VS_LORA.md`](docs/FULL_SFT_VS_LORA.md) | 模块级 Full SFT vs LoRA（~120 ep） |
+| [`docs/VISION_SMOKE_EXPORT_I2V.md`](docs/VISION_SMOKE_EXPORT_I2V.md) | Vision smoke→导出→I2V（打开文档页即可内嵌预览 pred/GT） |
+| [`notes/analysis_2026-08-10.md`](notes/analysis_2026-08-10.md) | 会话纪要 |
 
-Recipe folder: [`experiments/stack3cam_wam/`](experiments/stack3cam_wam/)
+配方目录：[`experiments/stack3cam_wam/`](experiments/stack3cam_wam/)
 
-Baseline (same task, different family): π0 3-cam on LeRobot (`upna/pi0_stack_white_blue_black_3cam_*`).
+对照基线（同任务、不同模型族）：π0 3-cam on LeRobot（`upna/pi0_stack_white_blue_black_3cam_*`）。
 
-## Setup
+## 环境准备
 
 ```bash
-# 1) Engine (once)
-#    clone + uv sync cosmos-framework elsewhere, e.g. ../cosmos-framework
+# 1) 引擎（一次性）
+#    另处 clone + uv sync cosmos-framework，例如 ../cosmos-framework
 
-# 2) Lab env
+# 2) Lab 环境
 cd /path/to/cosmos-edge-lab
-export COSMOS_FRAMEWORK_ROOT=/path/to/cosmos-framework   # optional if ../cosmos-framework
+export COSMOS_FRAMEWORK_ROOT=/path/to/cosmos-framework   # 若已是 ../cosmos-framework 可省略
 source scripts/env.sh
 
-# 3) Inject SO101 adapters into the engine
+# 3) 把 SO101 适配器注入引擎
 bash scripts/sync_patches.sh
 ```
 
-Also once on the machine:
+机器上还需一次性准备：
 
-- Wan2.2 VAE at `$COSMOS_FRAMEWORK_ROOT/examples/checkpoints/wan22_vae/Wan2.2_VAE.pth`
-- HF weights `/home/july/models/Cosmos3-Edge` (override `EDGE_HF`)
-- Convert DCP: `bash scripts/prepare_edge_dcp.sh`
+- Wan2.2 VAE：`$COSMOS_FRAMEWORK_ROOT/examples/checkpoints/wan22_vae/Wan2.2_VAE.pth`
+- HF 权重：`/home/july/models/Cosmos3-Edge`（可用 `EDGE_HF` 覆盖）
+- 转 DCP：`bash scripts/prepare_edge_dcp.sh`
 
-## Runbook
+## 运行手册
 
 ```bash
 source scripts/env.sh
 
-# Vision data (front cam clips → JSONL)
+# Vision 数据（前视 clip → JSONL）
 bash scripts/prepare_vision_data.sh
 
-# Smoke Vision (when GPU free)
+# Vision smoke（GPU 空闲时）
 export EXTRA_TAIL_OVERRIDES="trainer.max_iter=10 checkpoint.save_iter=10"
 bash scripts/launch_vision_sft.sh
 
-# Smoke Action
+# Action smoke
 export EXTRA_TAIL_OVERRIDES="trainer.max_iter=10 checkpoint.save_iter=10 dataloader_train.max_samples_per_batch=2"
 bash scripts/launch_action_policy.sh
 
-# Full-ish: unset EXTRA_TAIL_OVERRIDES and re-run
+# 更长训练：取消 EXTRA_TAIL_OVERRIDES 再跑
 ```
 
-Outputs land under `outputs/` (gitignored). Checkpoints under `checkpoints/`.
+产物在 `outputs/`（已 gitignore）；检查点在 `checkpoints/`。
 
-## Layout
+## 目录结构
 
 ```
-configs/                 # TOML recipes you own
-scripts/                 # convert / sync / launch
-patches/cosmos-framework # SO101 dataset + action experiment sources
+configs/                 # 你拥有的 TOML 配方
+scripts/                 # 转换 / 同步 / 启动
+patches/cosmos-framework # SO101 数据集 + action experiment 源码
 experiments/stack3cam_wam
-docs/                    # design docs
-notes/                   # working hypotheses / comparisons
-data/ processed/         # local only
+docs/                    # 设计文档
+notes/                   # 工作假设 / 对比记录
+data/ processed/         # 仅本机
 ```
 
-## License note
+## 许可说明
 
-Upstream NVIDIA files kept under `patches/` and some configs retain their
-SPDX headers (OpenMDW). Your experiment narrative and adapters in this repo
-are part of the personal lab; respect upstream licenses when redistributing.
+`patches/` 下保留的上游 NVIDIA 文件及部分配置仍带 SPDX 头（OpenMDW）。
+本仓库的实验叙述与适配器属于个人 lab；再分发时请遵守上游许可。
