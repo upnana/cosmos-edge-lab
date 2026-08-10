@@ -158,10 +158,10 @@ python -m cosmos_framework.scripts.export_model \
 - **模式：** `image2video`
 - **Prompt：** 与 Vision SFT caption 同风格的结构化 JSON（SO-101、白→蓝→黑叠块、静态第三人称前视）
 
-仓库内副本：
+仓库内副本（可直接在 GitHub / clone 后查看）：
 
 - [`assets/vision_smoke_i2v/i2v_cond_first_frame.png`](assets/vision_smoke_i2v/i2v_cond_first_frame.png)
-- [`assets/vision_smoke_i2v/i2v_stack3cam.json`](assets/vision_smoke_i2v/i2v_stack3cam.json)
+- [`assets/vision_smoke_i2v/i2v_stack3cam.json`](assets/vision_smoke_i2v/i2v_stack3cam.json)（`vision_path` 相对同目录首帧；本机复现推理时改为绝对路径）
 
 ### 5.2 命令
 
