@@ -1,0 +1,26 @@
+{
+  "held_out_episode": 111,
+  "source_clip": "val/videos/episode_000111_clip000.mp4",
+  "note": "val split episode; not in train JSONL (108 train / 12 val)",
+  "val_episodes": [
+    3,
+    22,
+    25,
+    30,
+    47,
+    57,
+    59,
+    69,
+    73,
+    99,
+    103,
+    111
+  ],
+  "train_job": "stack3cam_vision_sft_edge_500",
+  "max_iter": 500,
+  "i2v": {
+    "num_frames": 49,
+    "fps": 24,
+    "resolution": 480
+  }
+}

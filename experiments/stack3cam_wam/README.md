@@ -21,5 +21,6 @@
 |------|------|------|------|
 | 2026-08-10 | Vision smoke | 10 | loss≈1.56；已导出并跑 I2V，见 `docs/VISION_SMOKE_EXPORT_I2V.md` |
 | 2026-08-10 | Action smoke | 10 | loss≈20→15.6；ckpt `iter_000000010` |
+| 2026-08-10 | Vision SFT | 500 | job `stack3cam_vision_sft_edge_500`；held-out ep111 I2V，见 `docs/VISION_500_HELDOUT_I2V.md` |
 
 基线 π0（同任务）：Hugging Face `upna/pi0_stack_white_blue_black_3cam_060000`（及后续 80k）。
