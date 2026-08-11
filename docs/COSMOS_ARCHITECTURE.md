@@ -3,6 +3,8 @@
 个人 lab 笔记，用来理解我们后训练改的是什么。不能替代 NVIDIA 论文/官方文档；
 与本机所用的 `cosmos-framework` Edge 配置对齐。
 
+更细的 **Attention / `*_moe_gen` / Vision 训哪些**：见 [`MOT_ATTENTION_AND_VISION_SFT.md`](MOT_ATTENTION_AND_VISION_SFT.md)。
+
 ## 一句话
 
 Cosmos3 是 **Mixture-of-Transformers（MoT）** 全模态模型：

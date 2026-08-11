@@ -15,6 +15,7 @@ wandb_mode   = "disabled"
 
 [model]
 max_num_tokens_after_packing = 45056
+# two_way：前向跑 und↔gen shared attention；und 主干默认不训。详解见 docs/MOT_ATTENTION_AND_VISION_SFT.md
 joint_attn_implementation    = "two_way"
 precision                    = "bfloat16"                # was [model.parallelism].precision
 
@@ -44,12 +45,13 @@ vae_path = "${oc.env:WAN_VAE_PATH}"
 betas         = [0.9, 0.95]
 eps           = 1.0e-6
 fused         = true
+# 仅名字含子串的参数可训；其余冻住。见 docs/MOT_ATTENTION_AND_VISION_SFT.md §7
 keys_to_select = [
-    "moe_gen",
+    "moe_gen",               # Generator 塔（*_moe_gen）
     "time_embedder",
     "vae2llm",
     "llm2vae",
-    "k_norm_und_for_gen",  # und-K norm trains with the gen pathway
+    "k_norm_und_for_gen",    # gen 看 und 时对 und-K 的 RMSNorm
 ]
 lr            = 1.0e-4                                 # tuned via LR sweep: full fine-tune converges faster at 1e-4 than 2e-5 (LoRA super stays 5e-4)
 weight_decay  = 0                                        # int matches legacy YAML repr
