@@ -42,6 +42,7 @@ cosmos-edge-lab/          ← 你的实验科学
 | [`docs/FULL_SFT_VS_LORA.md`](docs/FULL_SFT_VS_LORA.md) | 模块级 Full SFT vs LoRA（~120 ep） |
 | [`docs/VISION_SMOKE_EXPORT_I2V.md`](docs/VISION_SMOKE_EXPORT_I2V.md) | Vision smoke→导出→I2V（打开文档页即可内嵌预览 pred/GT） |
 | [`docs/VISION_500_HELDOUT_I2V.md`](docs/VISION_500_HELDOUT_I2V.md) | Vision 500iter→导出→held-out ep111 I2V（含 pred/GT 并排） |
+| [`docs/ACTION_POLICY_OFFLINE_WAM.md`](docs/ACTION_POLICY_OFFLINE_WAM.md) | Action-Policy 2000→WAM/FD 离线评测（ep111，含 1s/3s 预览） |
 | [`notes/analysis_2026-08-10.md`](notes/analysis_2026-08-10.md) | 会话纪要 |
 
 配方目录：[`experiments/stack3cam_wam/`](experiments/stack3cam_wam/)

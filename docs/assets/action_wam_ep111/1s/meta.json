@@ -1,0 +1,17 @@
+{
+  "episode": 111,
+  "start_frame": 645,
+  "num_frames": 33,
+  "chunk_length": 32,
+  "fps": 30.0,
+  "image_size": 256,
+  "prompt": "stack the blocks from bottom to top white then blue then black",
+  "concat_obs": "/home/july/cosmos-edge-lab/outputs/eval_action_wam/inputs/ep111/concat_obs.mp4",
+  "actions": "/home/july/cosmos-edge-lab/outputs/eval_action_wam/inputs/ep111/actions.json",
+  "actions_norm": "/home/july/cosmos-edge-lab/outputs/eval_action_wam/inputs/ep111/actions_norm.json",
+  "mean_step_motion": 5.294616170810612,
+  "wam_json": "/home/july/cosmos-edge-lab/outputs/eval_action_wam/inputs/ep111/wam_ep111.json",
+  "fd_json": "/home/july/cosmos-edge-lab/outputs/eval_action_wam/inputs/ep111/fd_ep111.json",
+  "action_dim": 6,
+  "n_actions": 32
+}
