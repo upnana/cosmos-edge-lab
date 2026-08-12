@@ -6,6 +6,8 @@
 本文汇总本仓库已落盘的 **Vision I2V** 与 **Action-Policy WAM/FD** 证据。  
 不宣称对 π0 / 官方 RoboLab 的 SOTA。
 
+真机 closed-loop SR（vs π0）尚未跑；协议与脚本骨架见 [`REAL_ROBOT_EVAL_CHECKLIST.md`](REAL_ROBOT_EVAL_CHECKLIST.md)、`scripts/rollout_action_{offline.py,real.sh}`、[`notes/rollout_trials.md`](../notes/rollout_trials.md)。
+
 ---
 
 ## 1. Vision SFT → I2V（世界动力学）
