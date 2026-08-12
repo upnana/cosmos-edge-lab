@@ -75,6 +75,15 @@ EPISODES=111 bash scripts/run_action_wam_heldout.sh
 
 GitHub 可读页（含 GIF/mp4）：[`docs/ACTION_POLICY_OFFLINE_WAM.md`](../docs/ACTION_POLICY_OFFLINE_WAM.md)
 
+### 加长 ~8.0s（chunk=240，2026-08-12）
+
+窗口：`start_frame=273`；241 帧 @30fps。
+
+| 指标 | 值 |
+|------|-----|
+| Action L1（raw / meanstd） | 15.2 / 0.71 |
+| WAM / FD PSNR | 16.0 / 16.1 dB |
+
 ## 与 Vision 的关系
 
 Vision 500 已作世界模型证据；本轨是 **会动手** 的主展示。Action-policy 的 WAM / forward_dynamics 离线评测提供同一底座上的联合证据。

@@ -6,5 +6,6 @@ Held-out ep111 offline WAM / forward_dynamics previews from Action-Policy `iter_
 |--------|------|-------|
 | `1s/` | ~1.1s | 32 |
 | `3s/` | ~3.2s | 96 |
+| `8s/` | ~8.0s | 240 |
 
 Each folder: `gt_wam_fd.{gif,mp4}`, `metrics.json`, `meta.json`.

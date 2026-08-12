@@ -14,7 +14,7 @@
 | FD | `forward_dynamics` | 给定 **GT 动作（meanstd）**，只预测未来视频 |
 
 入口脚本：`scripts/run_action_wam_heldout.sh`。  
-完整 metrics JSON：[`assets/action_wam_ep111/1s/metrics.json`](assets/action_wam_ep111/1s/metrics.json) / [`3s/metrics.json`](assets/action_wam_ep111/3s/metrics.json)。
+完整 metrics JSON：[`1s`](assets/action_wam_ep111/1s/metrics.json) / [`3s`](assets/action_wam_ep111/3s/metrics.json) / [`8s`](assets/action_wam_ep111/8s/metrics.json)。
 
 ---
 
@@ -64,7 +64,31 @@
 
 ---
 
-## 3. 怎么复现
+## 3. ~8.0s（chunk=240，长时外推）
+
+窗口：`start_frame=273`；241 帧 @30fps ≈ **8.03s**（2026-08-12）。
+
+| 指标 | 值 |
+|------|-----|
+| Action L1（raw deg，denorm） | 15.2 |
+| Action MSE（raw） | 462.2 |
+| Action L1（meanstd） | 0.71 |
+| WAM vision PSNR vs GT | 16.0 dB |
+| FD vision PSNR vs GT | 16.1 dB |
+
+相对 1s，视频 PSNR 略降；动作仍明显粗于训练 chunk。
+
+### GT \| WAM \| FD
+
+![8s preview](assets/action_wam_ep111/8s/gt_wam_fd.gif)
+
+<video src="assets/action_wam_ep111/8s/gt_wam_fd.mp4" controls width="960" preload="metadata">
+  <a href="assets/action_wam_ep111/8s/gt_wam_fd.mp4">gt_wam_fd.mp4</a>
+</video>
+
+---
+
+## 4. 怎么复现
 
 ```bash
 source scripts/env.sh
@@ -74,6 +98,10 @@ EPISODES=111 bash scripts/run_action_wam_heldout.sh
 
 # ~3s
 EPISODES=111 CHUNK_LENGTH=96 EVAL_ROOT=$LAB_ROOT/outputs/eval_action_wam_3s \
+  bash scripts/run_action_wam_heldout.sh
+
+# ~8s（241=4n+1 帧）
+EPISODES=111 CHUNK_LENGTH=240 EVAL_ROOT=$LAB_ROOT/outputs/eval_action_wam_8s \
   bash scripts/run_action_wam_heldout.sh
 ```
 
@@ -85,6 +113,6 @@ EPISODES=111 CHUNK_LENGTH=96 EVAL_ROOT=$LAB_ROOT/outputs/eval_action_wam_3s \
 
 ---
 
-## 4. 解读（暂定）
+## 5. 解读（暂定）
 
 离线 open-loop：动作有信号但仍粗；WAM/FD 视频都能看出桌面动力学。真机 closed-loop 与 π0 对比仍待做。详见 [`notes/action_policy_2000_showcase.md`](../notes/action_policy_2000_showcase.md)。
