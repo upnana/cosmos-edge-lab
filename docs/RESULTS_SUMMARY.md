@@ -6,7 +6,7 @@
 本文汇总本仓库已落盘的 **Vision I2V** 与 **Action-Policy WAM/FD** 证据。  
 不宣称对 π0 / 官方 RoboLab 的 SOTA。
 
-真机 closed-loop SR（vs π0）尚未跑；协议与脚本骨架见 [`REAL_ROBOT_EVAL_CHECKLIST.md`](REAL_ROBOT_EVAL_CHECKLIST.md)、`scripts/rollout_action_{offline.py,real.sh}`、[`notes/rollout_trials.md`](../notes/rollout_trials.md)。
+真机 closed-loop SR（vs π0）：驱动已接好（`scripts/so101_rollout_driver.py`），但 **本 H100 无臂/相机**，SR 数字需在 bench PC 上 `FORCE_REAL=1` 跑完后填入。协议见 [`REAL_ROBOT_EVAL_CHECKLIST.md`](REAL_ROBOT_EVAL_CHECKLIST.md)。
 
 ---
 

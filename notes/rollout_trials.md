@@ -1,8 +1,18 @@
 # Rollout trials log — SO-101 stack vs π0
 
 > 协议见 [`docs/REAL_ROBOT_EVAL_CHECKLIST.md`](../docs/REAL_ROBOT_EVAL_CHECKLIST.md)  
-> 离线：`scripts/rollout_action_offline.py`  
-> 真机：`scripts/rollout_action_real.sh`
+> 驱动：`scripts/so101_rollout_driver.py`  
+> 包装：`scripts/rollout_action_real.sh`  
+> 离线：`scripts/rollout_action_offline.py`
+
+## 本机状态（H100）
+
+| 项 | 值 |
+|----|-----|
+| `/dev/ttyUSB*` | 无 |
+| `/dev/video*` | 无 |
+| dry-run 链路 | 可（`POLICY=zeros`） |
+| 真机 SR | **blocked — 需 bench PC** |
 
 ## 环境
 

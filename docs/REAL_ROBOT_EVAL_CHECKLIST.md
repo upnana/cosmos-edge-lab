@@ -5,11 +5,15 @@
 > 对照：π0 3-cam（`upna/pi0_stack_white_blue_black_3cam_*`）  
 > 离线 WAM/FD 已完成 → 本清单补 **closed-loop SR**。
 
-相关脚本骨架：
+相关脚本：
 
 - 离线：`scripts/rollout_action_offline.py`
-- 真机：`scripts/rollout_action_real.sh`（调用同一 trial 记录格式）
+- 真机闭环驱动：`scripts/so101_rollout_driver.py`（LeRobot SO101Follower + Cosmos/π0）
+- 包装：`scripts/rollout_action_real.sh`
 - 公共：`scripts/rollout_common.py`
+
+> **硬件注意：** 当前 H100 训练机通常 **无** `/dev/ttyUSB*` / `/dev/video*`。  
+> 在此机用 `DRY_RUN=1` 验链路；**真机 SR** 须在接好臂与相机的 bench PC 上 `FORCE_REAL=1` 跑。
 
 ---
 
@@ -85,21 +89,25 @@ python scripts/rollout_action_offline.py \
 
 ```bash
 source scripts/env.sh
-# 先 dry-run
-DRY_RUN=1 N_TRIALS=2 bash scripts/rollout_action_real.sh
 
-# 正式（确认急停后）
-POLICY=cosmos_action_2000 N_TRIALS=20 bash scripts/rollout_action_real.sh
-POLICY=pi0_80k N_TRIALS=20 bash scripts/rollout_action_real.sh
+# 本机（无臂）先 dry-run 验日志链路
+DRY_RUN=1 N_TRIALS=1 POLICY=zeros bash scripts/rollout_action_real.sh
+
+# bench PC（有 SO-101 + front/wrist[/side]）——确认急停后
+export SO101_PORT=/dev/ttyUSB0   # 或 lerobot-find-port 结果
+export CAM_FRONT=0 CAM_WRIST=1 CAM_SIDE=2
+FORCE_REAL=1 INTERACTIVE=1 POLICY=cosmos N_TRIALS=20 bash scripts/rollout_action_real.sh
+FORCE_REAL=1 INTERACTIVE=1 POLICY=pi0    N_TRIALS=20 bash scripts/rollout_action_real.sh
 ```
+
+环境：`LEROBOT_PYTHON` 默认 `miniconda3/envs/lerobot_alohamini`；`LEROBOT_SRC` 默认 `lerobot_alohamini/src`。
 
 每 trial：
 
-1. 复位臂 + 摆块（按布局 ID）
-2. 录视频开始
-3. 闭环执行直到成功 / 失败 / 超时
-4. 人标 `success: true/false` + 失败码
-5. 停录；日志进 `outputs/rollout_real/trials.jsonl`
+1. `home` → 人摆块（layout ID）
+2. 闭环：`get_obs → policy.infer_chunk → execute_chunk` 直到成功/失败/超时
+3. 人标 `success` + 失败码（`INTERACTIVE=1`）
+4. 日志：`outputs/rollout_real/<policy>_<stamp>/trials.jsonl`
 
 - [ ] Cosmos 完成 ≥20 trials  
 - [ ] π0 完成 ≥20 trials  
