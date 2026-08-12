@@ -87,3 +87,25 @@ GitHub 可读页（含 GIF/mp4）：[`docs/ACTION_POLICY_OFFLINE_WAM.md`](../doc
 ## 与 Vision 的关系
 
 Vision 500 已作世界模型证据；本轨是 **会动手** 的主展示。Action-policy 的 WAM / forward_dynamics 离线评测提供同一底座上的联合证据。
+
+### 更多 held-out（chunk=32，2026-08-12）
+
+episodes：3 / 22 / 47 / 69 / 99（max-motion）  
+**Mean：** Action L1 raw=14.41°，WAM PSNR=17.8，FD PSNR=17.9
+
+| Ep | Action L1 (raw°) | Action L1 (norm) | WAM PSNR | FD PSNR |
+|----|------------------|------------------|----------|---------|
+| 3 | 18.60 | 0.771 | 17.1 | 17.3 |
+| 22 | 9.19 | 0.442 | 19.1 | 19.0 |
+| 47 | 11.79 | 0.571 | 19.9 | 19.3 |
+| 69 | 18.84 | 0.666 | 17.9 | 17.7 |
+| 99 | 13.62 | 0.612 | 15.3 | 16.2 |
+
+| 时长 | Mean Action L1 | Mean WAM | Mean FD |
+|------|----------------|----------|---------|
+| ~1.1s (chunk=32) | 14.4° | 17.8 | 17.9 |
+| ~3.2s (chunk=96) | 22.2° | 16.9 | 17.1 |
+| ~8.0s (chunk=240) | 20.2° | 15.1 | 15.1 |
+
+产物：`outputs/eval_action_wam_more{,_3s,_8s}/`；文档：`docs/ACTION_POLICY_WAM_MORE.md` / `docs/RESULTS_SUMMARY.md`；打包：`outputs/bundles/action_wam_more.tar.gz`
+

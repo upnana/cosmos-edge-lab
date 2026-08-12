@@ -116,3 +116,12 @@ EPISODES=111 CHUNK_LENGTH=240 EVAL_ROOT=$LAB_ROOT/outputs/eval_action_wam_8s \
 ## 5. 解读（暂定）
 
 离线 open-loop：动作有信号但仍粗；WAM/FD 视频都能看出桌面动力学。真机 closed-loop 与 π0 对比仍待做。详见 [`notes/action_policy_2000_showcase.md`](../notes/action_policy_2000_showcase.md)。
+
+更多 held-out（ep 3/22/47/69/99，含 1s/3s/8s）：[`ACTION_POLICY_WAM_MORE.md`](ACTION_POLICY_WAM_MORE.md)。  
+总表：[`RESULTS_SUMMARY.md`](RESULTS_SUMMARY.md)。
+
+---
+
+## 更多 held-out
+
+见 [`ACTION_POLICY_WAM_MORE.md`](ACTION_POLICY_WAM_MORE.md)（ep 3/22/47/69/99）。

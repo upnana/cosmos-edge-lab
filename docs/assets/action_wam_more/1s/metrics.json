@@ -1,0 +1,483 @@
+{
+  "eval_root": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more",
+  "stats_path": "/home/july/cosmos-framework/cosmos_framework/data/generator/action/normalizer_stats/so101_stack_3cam_meanstd.json",
+  "episodes": [
+    {
+      "episode": 3,
+      "input_dir": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/inputs/ep003",
+      "action": {
+        "raw": {
+          "T": 32,
+          "D": 6,
+          "mse": 623.3249411287385,
+          "l1": 18.60041539748674,
+          "rmse": 24.96647634586704,
+          "per_dim_mse": [
+            153.54578687131874,
+            517.7154064311287,
+            1912.046609872357,
+            669.0495119126821,
+            10.55487341073892,
+            477.0374582742054
+          ],
+          "per_dim_l1": [
+            12.254874042771222,
+            20.83182613125002,
+            35.90413816544137,
+            19.210275033600297,
+            2.6225077822265237,
+            20.778871229631033
+          ]
+        },
+        "normalized_meanstd": {
+          "T": 32,
+          "D": 6,
+          "mse": 1.0590645305917745,
+          "l1": 0.7706227362493004,
+          "rmse": 1.0291086097160855,
+          "per_dim_mse": [
+            0.8398038511380339,
+            0.16274013542034807,
+            0.5106568415311901,
+            3.1708833298775767,
+            0.09072698619811251,
+            1.5795760393853868
+          ],
+          "per_dim_l1": [
+            0.906314296235746,
+            0.3693423720957873,
+            0.5867591171244824,
+            1.3224966633882935,
+            0.24314117627808735,
+            1.195682792373406
+          ]
+        },
+        "pred_shape": [
+          32,
+          6
+        ],
+        "gt_shape": [
+          32,
+          6
+        ],
+        "pred_space": "meanstd_then_denorm_for_raw",
+        "sample_outputs": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/wam_out/wam_ep003/sample_outputs.json",
+        "start_frame": 593,
+        "mean_step_motion": 5.9748500047613415
+      },
+      "vision": {
+        "wam": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep003_gt_vs_wam.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 17.119628328120086,
+          "psnr_min_vs_gt": 15.025430474223178,
+          "pred": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/wam_out/wam_ep003/vision.mp4"
+        },
+        "forward_dynamics": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep003_gt_vs_fd.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 17.327261226361053,
+          "psnr_min_vs_gt": 14.885930088753241,
+          "pred": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/fd_out/fd_ep003/vision.mp4"
+        },
+        "triple": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep003_gt_wam_fd.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 17.119628328120086,
+          "psnr_min_vs_gt": 15.025430474223178
+        }
+      }
+    },
+    {
+      "episode": 22,
+      "input_dir": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/inputs/ep022",
+      "action": {
+        "raw": {
+          "T": 32,
+          "D": 6,
+          "mse": 133.26947657556113,
+          "l1": 9.18855624483222,
+          "rmse": 11.544239973924707,
+          "per_dim_mse": [
+            24.39335351049324,
+            93.80396655970053,
+            271.1344821467804,
+            141.53461138635438,
+            67.34171271715053,
+            201.4087331328878
+          ],
+          "per_dim_l1": [
+            4.308246905412453,
+            8.601332617521502,
+            15.046416004695658,
+            8.628237338025357,
+            7.7842306471375755,
+            10.762873956200783
+          ]
+        },
+        "normalized_meanstd": {
+          "T": 32,
+          "D": 6,
+          "mse": 0.358644050554481,
+          "l1": 0.44200641286985315,
+          "rmse": 0.5988689761162128,
+          "per_dim_mse": [
+            0.1334170910039491,
+            0.029486606021878633,
+            0.07241281544518033,
+            0.6707870372144655,
+            0.5788521001142396,
+            0.6669086535271731
+          ],
+          "per_dim_l1": [
+            0.31861818803367775,
+            0.15249918908331594,
+            0.2458942679565743,
+            0.5939954045687739,
+            0.7217011933356722,
+            0.6193302342411052
+          ]
+        },
+        "pred_shape": [
+          32,
+          6
+        ],
+        "gt_shape": [
+          32,
+          6
+        ],
+        "pred_space": "meanstd_then_denorm_for_raw",
+        "sample_outputs": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/wam_out/wam_ep022/sample_outputs.json",
+        "start_frame": 528,
+        "mean_step_motion": 5.738055339834596
+      },
+      "vision": {
+        "wam": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep022_gt_vs_wam.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 19.069671216204107,
+          "psnr_min_vs_gt": 16.102296444165134,
+          "pred": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/wam_out/wam_ep022/vision.mp4"
+        },
+        "forward_dynamics": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep022_gt_vs_fd.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 19.029657297628315,
+          "psnr_min_vs_gt": 15.258920174866425,
+          "pred": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/fd_out/fd_ep022/vision.mp4"
+        },
+        "triple": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep022_gt_wam_fd.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 19.069671216204107,
+          "psnr_min_vs_gt": 16.102296444165134
+        }
+      }
+    },
+    {
+      "episode": 47,
+      "input_dir": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/inputs/ep047",
+      "action": {
+        "raw": {
+          "T": 32,
+          "D": 6,
+          "mse": 212.8994196756743,
+          "l1": 11.786755312913384,
+          "rmse": 14.591073287310783,
+          "per_dim_mse": [
+            204.90393196639755,
+            137.09454214311185,
+            559.520483957249,
+            200.6735808699204,
+            46.770146812807575,
+            128.43383230455962
+          ],
+          "per_dim_l1": [
+            14.180778173237805,
+            9.745622452041145,
+            20.380369318567794,
+            13.19391200714804,
+            5.76186961541419,
+            7.457980311071331
+          ]
+        },
+        "normalized_meanstd": {
+          "T": 32,
+          "D": 6,
+          "mse": 0.5152660473988092,
+          "l1": 0.5710441473770891,
+          "rmse": 0.7178203447930472,
+          "per_dim_mse": [
+            1.1207022653309253,
+            0.043094688851467715,
+            0.1494330533755585,
+            0.9510693917228595,
+            0.4020241929241881,
+            0.4252726921878558
+          ],
+          "per_dim_l1": [
+            1.0487453355536032,
+            0.17278712347676708,
+            0.33306376699340906,
+            0.9083110250099232,
+            0.534201562850412,
+            0.42915607037841935
+          ]
+        },
+        "pred_shape": [
+          32,
+          6
+        ],
+        "gt_shape": [
+          32,
+          6
+        ],
+        "pred_space": "meanstd_then_denorm_for_raw",
+        "sample_outputs": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/wam_out/wam_ep047/sample_outputs.json",
+        "start_frame": 95,
+        "mean_step_motion": 5.262217247496318
+      },
+      "vision": {
+        "wam": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep047_gt_vs_wam.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 19.925292585523778,
+          "psnr_min_vs_gt": 16.02055303958872,
+          "pred": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/wam_out/wam_ep047/vision.mp4"
+        },
+        "forward_dynamics": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep047_gt_vs_fd.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 19.260301149625576,
+          "psnr_min_vs_gt": 15.918771164314919,
+          "pred": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/fd_out/fd_ep047/vision.mp4"
+        },
+        "triple": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep047_gt_wam_fd.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 19.925292585523778,
+          "psnr_min_vs_gt": 16.02055303958872
+        }
+      }
+    },
+    {
+      "episode": 69,
+      "input_dir": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/inputs/ep069",
+      "action": {
+        "raw": {
+          "T": 32,
+          "D": 6,
+          "mse": 621.5015931122301,
+          "l1": 18.843416890711264,
+          "rmse": 24.929933676450688,
+          "per_dim_mse": [
+            84.30871312752694,
+            1386.2355693735271,
+            1636.820846520024,
+            565.4645801578578,
+            15.145288411456432,
+            41.03456108298937
+          ],
+          "per_dim_l1": [
+            9.037751954293944,
+            36.10532864361989,
+            38.40234319738341,
+            20.5553741256176,
+            3.679338920436781,
+            5.280364502915946
+          ]
+        },
+        "normalized_meanstd": {
+          "T": 32,
+          "D": 6,
+          "mse": 0.7133394795765038,
+          "l1": 0.6660306243511631,
+          "rmse": 0.8445942692065248,
+          "per_dim_mse": [
+            0.46111836352974056,
+            0.4357532371684633,
+            0.43715135359180557,
+            2.6799544412383973,
+            0.13018501683540748,
+            0.13587446509520967
+          ],
+          "per_dim_l1": [
+            0.6683906969113894,
+            0.6401372420504342,
+            0.6275857363900345,
+            1.4150975792006948,
+            0.341123408328355,
+            0.3038490832260697
+          ]
+        },
+        "pred_shape": [
+          32,
+          6
+        ],
+        "gt_shape": [
+          32,
+          6
+        ],
+        "pred_space": "meanstd_then_denorm_for_raw",
+        "sample_outputs": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/wam_out/wam_ep069/sample_outputs.json",
+        "start_frame": 540,
+        "mean_step_motion": 4.439581303067689
+      },
+      "vision": {
+        "wam": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep069_gt_vs_wam.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 17.855331522021316,
+          "psnr_min_vs_gt": 15.903082909485732,
+          "pred": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/wam_out/wam_ep069/vision.mp4"
+        },
+        "forward_dynamics": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep069_gt_vs_fd.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 17.70616145468714,
+          "psnr_min_vs_gt": 15.596590850617119,
+          "pred": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/fd_out/fd_ep069/vision.mp4"
+        },
+        "triple": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep069_gt_wam_fd.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 17.855331522021316,
+          "psnr_min_vs_gt": 15.903082909485732
+        }
+      }
+    },
+    {
+      "episode": 99,
+      "input_dir": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/inputs/ep099",
+      "action": {
+        "raw": {
+          "T": 32,
+          "D": 6,
+          "mse": 377.9833886543724,
+          "l1": 13.61650076908487,
+          "rmse": 19.441794892817185,
+          "per_dim_mse": [
+            57.11215303215874,
+            253.61257105906964,
+            1207.256212290181,
+            475.81799544467,
+            53.558425924115625,
+            220.5429741760391
+          ],
+          "per_dim_l1": [
+            7.475714965795266,
+            11.547673571839306,
+            27.233928182160774,
+            17.611836725260225,
+            6.568629047463523,
+            11.261222121990128
+          ]
+        },
+        "normalized_meanstd": {
+          "T": 32,
+          "D": 6,
+          "mse": 0.6933737238089539,
+          "l1": 0.6120224184401485,
+          "rmse": 0.8326906531293322,
+          "per_dim_mse": [
+            0.3123694048563361,
+            0.07972129792885767,
+            0.32242605441933603,
+            2.2550847477610576,
+            0.46037450005472746,
+            0.7302663378334092
+          ],
+          "per_dim_l1": [
+            0.5528696031013345,
+            0.20473697900218785,
+            0.4450672393907266,
+            1.2124550671220071,
+            0.6089988384243209,
+            0.6480067836003148
+          ]
+        },
+        "pred_shape": [
+          32,
+          6
+        ],
+        "gt_shape": [
+          32,
+          6
+        ],
+        "pred_space": "meanstd_then_denorm_for_raw",
+        "sample_outputs": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/wam_out/wam_ep099/sample_outputs.json",
+        "start_frame": 500,
+        "mean_step_motion": 5.426097863416226
+      },
+      "vision": {
+        "wam": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep099_gt_vs_wam.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 15.252618045664848,
+          "psnr_min_vs_gt": 12.089212064621918,
+          "pred": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/wam_out/wam_ep099/vision.mp4"
+        },
+        "forward_dynamics": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep099_gt_vs_fd.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 16.1804646951192,
+          "psnr_min_vs_gt": 12.902196739614965,
+          "pred": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/fd_out/fd_ep099/vision.mp4"
+        },
+        "triple": {
+          "path": "/home/july/cosmos-edge-lab/outputs/eval_action_wam_more/previews/ep099_gt_wam_fd.mp4",
+          "num_frames": 33,
+          "psnr_mean_vs_gt": 15.252618045664848,
+          "psnr_min_vs_gt": 12.089212064621918
+        }
+      }
+    }
+  ],
+  "summary": [
+    {
+      "episode": 3,
+      "action_l1": 18.60041539748674,
+      "action_mse": 623.3249411287385,
+      "action_l1_norm": 0.7706227362493004,
+      "action_mse_norm": 1.0590645305917745,
+      "wam_psnr": 17.119628328120086,
+      "fd_psnr": 17.327261226361053
+    },
+    {
+      "episode": 22,
+      "action_l1": 9.18855624483222,
+      "action_mse": 133.26947657556113,
+      "action_l1_norm": 0.44200641286985315,
+      "action_mse_norm": 0.358644050554481,
+      "wam_psnr": 19.069671216204107,
+      "fd_psnr": 19.029657297628315
+    },
+    {
+      "episode": 47,
+      "action_l1": 11.786755312913384,
+      "action_mse": 212.8994196756743,
+      "action_l1_norm": 0.5710441473770891,
+      "action_mse_norm": 0.5152660473988092,
+      "wam_psnr": 19.925292585523778,
+      "fd_psnr": 19.260301149625576
+    },
+    {
+      "episode": 69,
+      "action_l1": 18.843416890711264,
+      "action_mse": 621.5015931122301,
+      "action_l1_norm": 0.6660306243511631,
+      "action_mse_norm": 0.7133394795765038,
+      "wam_psnr": 17.855331522021316,
+      "fd_psnr": 17.70616145468714
+    },
+    {
+      "episode": 99,
+      "action_l1": 13.61650076908487,
+      "action_mse": 377.9833886543724,
+      "action_l1_norm": 0.6120224184401485,
+      "action_mse_norm": 0.6933737238089539,
+      "wam_psnr": 15.252618045664848,
+      "fd_psnr": 16.1804646951192
+    }
+  ]
+}

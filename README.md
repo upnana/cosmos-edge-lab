@@ -34,6 +34,10 @@ cosmos-edge-lab/          ← 你的实验科学
 
 | 文档 | 主题 |
 |------|------|
+| [`docs/RESULTS_SUMMARY.md`](docs/RESULTS_SUMMARY.md) | **结果汇总**（Vision I2V + Action WAM/FD） |
+| [`docs/ACTION_POLICY_OFFLINE_WAM.md`](docs/ACTION_POLICY_OFFLINE_WAM.md) | Action-Policy 离线 WAM/FD（ep111） |
+| [`docs/ACTION_POLICY_WAM_MORE.md`](docs/ACTION_POLICY_WAM_MORE.md) | 更多 held-out WAM/FD（1s/3s/8s） |
+| [`docs/VISION_500_HELDOUT_I2V.md`](docs/VISION_500_HELDOUT_I2V.md) | Vision 500 held-out I2V |
 | [`docs/EXPERIMENT_DESIGN.md`](docs/EXPERIMENT_DESIGN.md) | 假设与成功标准 |
 | [`docs/COSMOS_ARCHITECTURE.md`](docs/COSMOS_ARCHITECTURE.md) | Cosmos3 MoT / Edge 网络结构 |
 | [`docs/MOT_ATTENTION_AND_VISION_SFT.md`](docs/MOT_ATTENTION_AND_VISION_SFT.md) | MoT / und·gen / `*_moe_gen` / two_way / Vision 训哪些 |
