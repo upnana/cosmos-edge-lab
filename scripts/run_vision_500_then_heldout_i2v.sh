@@ -51,6 +51,11 @@ IN="$EVAL/i2v_heldout_ep111.json"
 OUT="$EVAL/i2v_out"
 mkdir -p "$OUT"
 echo ">>> [3/3] held-out I2V  ep111  -> $OUT"
+GPU_MON_DIR=""
+if [[ "${MONITOR_GPU:-1}" == "1" ]]; then
+  GPU_MON_DIR=$(bash "$LAB_ROOT/scripts/monitor_gpu.sh" start --tag vision_i2v_eval)
+  trap 'bash "$LAB_ROOT/scripts/monitor_gpu.sh" stop --tag vision_i2v_eval --out-dir "$GPU_MON_DIR" >/dev/null || true' EXIT
+fi
 (
   cd "$COSMOS_FRAMEWORK_ROOT"
   # shellcheck disable=SC1091
@@ -72,6 +77,11 @@ echo ">>> [3/3] held-out I2V  ep111  -> $OUT"
     --guidance 6.0 \
     --seed 0
 ) 2>&1 | tee "$I2V_LOG"
+if [[ -n "$GPU_MON_DIR" ]]; then
+  trap - EXIT
+  bash "$LAB_ROOT/scripts/monitor_gpu.sh" stop --tag vision_i2v_eval --out-dir "$GPU_MON_DIR" >/dev/null || true
+  echo ">>> GPU monitor: $GPU_MON_DIR/summary.json"
+fi
 
 echo ">>> DONE"
 echo "  ckpt:   $CKPT"

@@ -42,4 +42,8 @@ EOF
 chmod +x "$FW_LAUNCH"
 
 echo ">>> launching Vision SFT via $FW_LAUNCH"
-bash "$FW_LAUNCH"
+if [[ "${MONITOR_GPU:-1}" == "1" ]]; then
+  bash "$LAB_ROOT/scripts/monitor_gpu.sh" wrap --tag vision_sft -- bash "$FW_LAUNCH"
+else
+  bash "$FW_LAUNCH"
+fi

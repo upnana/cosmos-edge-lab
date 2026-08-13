@@ -95,8 +95,20 @@ for ep in $EPISODES; do
   FD_INPUTS+=("$fd_json")
 done
 
+GPU_MON_DIR=""
+if [[ "${MONITOR_GPU:-1}" == "1" ]]; then
+  GPU_MON_DIR=$(bash "$LAB_ROOT/scripts/monitor_gpu.sh" start --tag action_wam_eval)
+  trap 'bash "$LAB_ROOT/scripts/monitor_gpu.sh" stop --tag action_wam_eval --out-dir "$GPU_MON_DIR" >/dev/null || true' EXIT
+fi
+
 run_inference wam "${WAM_INPUTS[*]}" "$WAM_OUT" "$LOG_DIR/action_wam_heldout.log"
 run_inference forward_dynamics "${FD_INPUTS[*]}" "$FD_OUT" "$LOG_DIR/action_fd_heldout.log"
+
+if [[ -n "$GPU_MON_DIR" ]]; then
+  trap - EXIT
+  bash "$LAB_ROOT/scripts/monitor_gpu.sh" stop --tag action_wam_eval --out-dir "$GPU_MON_DIR" >/dev/null || true
+  echo ">>> GPU monitor: $GPU_MON_DIR/summary.json"
+fi
 
 echo ">>> [4/4] score"
 "$COSMOS_FRAMEWORK_ROOT/.venv/bin/python" \

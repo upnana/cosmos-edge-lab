@@ -42,4 +42,8 @@ EOF
 chmod +x "$FW_LAUNCH"
 
 echo ">>> launching Action-Policy SFT via $FW_LAUNCH"
-bash "$FW_LAUNCH"
+if [[ "${MONITOR_GPU:-1}" == "1" ]]; then
+  bash "$LAB_ROOT/scripts/monitor_gpu.sh" wrap --tag action_policy -- bash "$FW_LAUNCH"
+else
+  bash "$FW_LAUNCH"
+fi
