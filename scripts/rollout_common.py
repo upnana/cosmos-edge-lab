@@ -7,6 +7,7 @@ Part of upnana/cosmos-edge-lab. Skeleton — fill robot I/O in real path.
 from __future__ import annotations
 
 import json
+import os
 import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
@@ -15,9 +16,16 @@ from typing import Any
 
 import numpy as np
 
-DEFAULT_STATS = Path(
-    "/home/july/cosmos-framework/cosmos_framework/data/generator/action/"
-    "normalizer_stats/so101_stack_3cam_meanstd.json"
+# Prefer COSMOS_FRAMEWORK_ROOT (set by scripts/env.sh); fall back to sibling ../cosmos-framework.
+_FRAMEWORK_ROOT = Path(
+    os.environ.get(
+        "COSMOS_FRAMEWORK_ROOT",
+        str(Path(__file__).resolve().parents[1].parent / "cosmos-framework"),
+    )
+)
+DEFAULT_STATS = (
+    _FRAMEWORK_ROOT
+    / "cosmos_framework/data/generator/action/normalizer_stats/so101_stack_3cam_meanstd.json"
 )
 
 DEFAULT_PROMPT = "stack the blocks from bottom to top white then blue then black"
