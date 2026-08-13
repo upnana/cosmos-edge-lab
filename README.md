@@ -37,6 +37,7 @@ cosmos-edge-lab/          ← 你的实验科学
 | [`docs/RESULTS_SUMMARY.md`](docs/RESULTS_SUMMARY.md) | **结果汇总**（Vision I2V + Action WAM/FD） |
 | [`docs/REAL_ROBOT_EVAL_CHECKLIST.md`](docs/REAL_ROBOT_EVAL_CHECKLIST.md) | **真机 SR checklist** + 离线/真机 rollout 骨架 |
 | [`docs/BENCH_PC_OFFLINE_INFERENCE.md`](docs/BENCH_PC_OFFLINE_INFERENCE.md) | **Bench PC（wenxingnan）离线 WAM**：HF export、domain=22、front\|wrist@256、denorm |
+| [`docs/RESOLUTION_CONFIG.md`](docs/RESOLUTION_CONFIG.md) | **分辨率**：采集 640×480 vs 策略输入 256×256；仿真/论文怎么写 |
 | [`docs/GPU_MONITOR.md`](docs/GPU_MONITOR.md) | 训练/评测 GPU util + 显存采样（`monitor_gpu.sh`） |
 | [`docs/ACTION_POLICY_OFFLINE_WAM.md`](docs/ACTION_POLICY_OFFLINE_WAM.md) | Action-Policy 离线 WAM/FD（ep111） |
 | [`docs/ACTION_POLICY_WAM_MORE.md`](docs/ACTION_POLICY_WAM_MORE.md) | 更多 held-out WAM/FD（1s/3s/8s） |
