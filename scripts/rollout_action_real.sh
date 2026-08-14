@@ -20,7 +20,7 @@ POLICY="${POLICY:-zeros}"
 N_TRIALS="${N_TRIALS:-20}"
 DRY_RUN="${DRY_RUN:-0}"
 FORCE_REAL="${FORCE_REAL:-0}"
-TIMEOUT_S="${TIMEOUT_S:-90}"
+TIMEOUT_S="${TIMEOUT_S:-300}"
 LAYOUT_CYCLE="${LAYOUT_CYCLE:-5}"
 CHUNK="${CHUNK:-32}"
 EXECUTE_STEPS="${EXECUTE_STEPS:-16}"
@@ -30,16 +30,29 @@ CONTROL_HZ="${CONTROL_HZ:-30}"
 OUT_ROOT="${OUT_ROOT:-$LAB_ROOT/outputs/rollout_real}"
 EXPORT="${EXPORT:-$LAB_ROOT/outputs/export/action_stack3cam_action_policy_edge_2000}"
 PI0_CKPT="${PI0_CKPT:-/home/july/lerobot_alohamini/outputs/train/pi0_stack_white_blue_black_3cam/checkpoints/080000/pretrained_model}"
-LEROBOT_SRC="${LEROBOT_SRC:-/home/july/lerobot_alohamini/src}"
-# Prefer conda env that has SO101Follower + PI0Policy for real/π0; cosmos uses framework py.
-LEROBOT_PYTHON="${LEROBOT_PYTHON:-/home/july/miniconda3/envs/lerobot_alohamini/bin/python}"
+# Bench PC (wenxingnan) defaults; override on other hosts.
+if [[ -d /home/rxn/lerobot_alohamini/src ]]; then
+  LEROBOT_SRC="${LEROBOT_SRC:-/home/rxn/lerobot_alohamini/src}"
+else
+  LEROBOT_SRC="${LEROBOT_SRC:-/home/july/lerobot_alohamini/src}"
+fi
+# Prefer alohamini conda (has so_follower) for real/π0; cosmos subprocess uses FRAMEWORK_PYTHON.
+if [[ -x /home/rxn/miniconda3/envs/lerobot_alohamini/bin/python ]]; then
+  LEROBOT_PYTHON="${LEROBOT_PYTHON:-/home/rxn/miniconda3/envs/lerobot_alohamini/bin/python}"
+else
+  LEROBOT_PYTHON="${LEROBOT_PYTHON:-/home/july/miniconda3/envs/lerobot_alohamini/bin/python}"
+fi
 FRAMEWORK_PYTHON="${FRAMEWORK_PYTHON:-$COSMOS_FRAMEWORK_ROOT/.venv/bin/python}"
 SO101_PORT="${SO101_PORT:-/dev/ttyUSB0}"
 SO101_ID="${SO101_ID:-so101_follower}"
 CAM_FRONT="${CAM_FRONT:-0}"
 CAM_WRIST="${CAM_WRIST:-1}"
-CAM_SIDE="${CAM_SIDE:-2}"
+# Action-policy only uses front+wrist. Leave CAM_SIDE empty unless you need side
+# (do NOT reuse the wrist index — double-open causes OpenCV abort / exit 134).
+CAM_SIDE="${CAM_SIDE:-}"
 PROMPT="${PROMPT:-stack the blocks from bottom to top white then blue then black}"
+# 1 = keep Cosmos weights resident across chunks (default). 0 = cold CLI each chunk.
+COSMOS_WARM="${COSMOS_WARM:-1}"
 
 # Normalize policy aliases for the driver
 case "$POLICY" in
@@ -52,7 +65,7 @@ OUT_DIR="$OUT_ROOT/${POLICY}_${STAMP}"
 mkdir -p "$OUT_DIR"
 
 echo "=== SO-101 closed-loop rollout ==="
-echo "POLICY=$POLICY  N_TRIALS=$N_TRIALS  DRY_RUN=$DRY_RUN  FORCE_REAL=$FORCE_REAL"
+echo "POLICY=$POLICY  N_TRIALS=$N_TRIALS  DRY_RUN=$DRY_RUN  FORCE_REAL=$FORCE_REAL  COSMOS_WARM=$COSMOS_WARM"
 echo "OUT_DIR=$OUT_DIR"
 echo "EXPORT=$EXPORT"
 echo "PI0_CKPT=$PI0_CKPT"
@@ -77,6 +90,13 @@ else
   INTERACTIVE_ARGS+=(--no-interactive)
 fi
 
+WARM_ARGS=()
+if [[ "$COSMOS_WARM" == "1" ]]; then
+  WARM_ARGS+=(--cosmos-warm)
+else
+  WARM_ARGS+=(--no-cosmos-warm)
+fi
+
 # π0 / live robot: lerobot_alohamini python; cosmos cold-infer still uses FRAMEWORK_PYTHON inside driver.
 DRIVER_PY="$LEROBOT_PYTHON"
 if [[ "$POLICY" == "cosmos" || "$POLICY" == "zeros" || "$POLICY" == "hold" ]]; then
@@ -92,6 +112,7 @@ export PYTHONPATH="${LEROBOT_SRC}:${PYTHONPATH:-}"
 exec "$DRIVER_PY" "$LAB_ROOT/scripts/so101_rollout_driver.py" \
   "${MODE_ARGS[@]}" \
   "${INTERACTIVE_ARGS[@]}" \
+  "${WARM_ARGS[@]}" \
   --policy "$POLICY" \
   --n-trials "$N_TRIALS" \
   --timeout-s "$TIMEOUT_S" \

@@ -17,7 +17,7 @@ Examples:
   # Safe smoke on GPU host (mock robot, zero actions)
   python scripts/so101_rollout_driver.py --dry-run --policy zeros --n-trials 1
 
-  # Mock + Cosmos offline-style chunk (slow: cold inference each chunk)
+  # Mock + Cosmos (warm worker loads once; subsequent chunks are fast)
   python scripts/so101_rollout_driver.py --dry-run --policy cosmos --n-trials 1
 
   # Bench PC real eval
@@ -102,7 +102,12 @@ class RobotBackend:
     def disconnect(self) -> None: ...
     def home(self, pose: list[float]) -> None: ...
     def get_obs(self) -> dict[str, Any]: ...
-    def execute_chunk(self, actions_deg: np.ndarray, hz: float) -> None: ...
+    def execute_chunk(
+        self,
+        actions_deg: np.ndarray,
+        hz: float,
+        on_step: Any | None = None,
+    ) -> None: ...
 
 
 class MockRobot(RobotBackend):
@@ -138,11 +143,18 @@ class MockRobot(RobotBackend):
             obs[f"{j}.pos"] = float(self._state[i])
         return obs
 
-    def execute_chunk(self, actions_deg: np.ndarray, hz: float) -> None:
-        if len(actions_deg):
-            self._state = np.asarray(actions_deg[-1], dtype=np.float64)
-        # Simulate wall time lightly
-        time.sleep(min(0.05 * max(len(actions_deg), 1), 0.5))
+    def execute_chunk(
+        self,
+        actions_deg: np.ndarray,
+        hz: float,
+        on_step: Any | None = None,
+    ) -> None:
+        dt = 1.0 / max(hz, 1e-3)
+        for row in actions_deg:
+            self._state = np.asarray(row, dtype=np.float64)
+            if on_step is not None:
+                on_step(self.get_obs())
+            time.sleep(min(dt, 0.05))
 
 
 class SO101Robot(RobotBackend):
@@ -171,7 +183,13 @@ class SO101Robot(RobotBackend):
 
     def connect(self) -> None:
         from lerobot.cameras.opencv.configuration_opencv import OpenCVCameraConfig
-        from lerobot.robots.so_follower import SO101Follower, SO101FollowerConfig
+
+        # alohamini fork: lerobot.robots.so_follower
+        # stock lerobot:  lerobot.robots.so101_follower
+        try:
+            from lerobot.robots.so_follower import SO101Follower, SO101FollowerConfig
+        except ModuleNotFoundError:
+            from lerobot.robots.so101_follower import SO101Follower, SO101FollowerConfig
 
         cameras = {
             "front": OpenCVCameraConfig(
@@ -182,6 +200,12 @@ class SO101Robot(RobotBackend):
             ),
         }
         if self.cam_side is not None and str(self.cam_side) != "":
+            if str(self.cam_side) in {str(self.cam_front), str(self.cam_wrist)}:
+                raise ValueError(
+                    f"CAM_SIDE={self.cam_side} collides with front/wrist "
+                    f"({self.cam_front}/{self.cam_wrist}). Leave CAM_SIDE empty "
+                    "for action-policy, or set it to the side camera (e.g. 4)."
+                )
             cameras["side"] = OpenCVCameraConfig(
                 index_or_path=self.cam_side, width=800, height=480, fps=30
             )
@@ -217,11 +241,18 @@ class SO101Robot(RobotBackend):
                 out[k] = raw[k]
         return out
 
-    def execute_chunk(self, actions_deg: np.ndarray, hz: float) -> None:
+    def execute_chunk(
+        self,
+        actions_deg: np.ndarray,
+        hz: float,
+        on_step: Any | None = None,
+    ) -> None:
         dt = 1.0 / max(hz, 1e-3)
         for row in actions_deg:
             action = {f"{j}.pos": float(v) for j, v in zip(JOINTS, row)}
             self.robot.send_action(action)
+            if on_step is not None:
+                on_step(self.get_obs())
             time.sleep(dt)
 
 
@@ -231,32 +262,53 @@ class SO101Robot(RobotBackend):
 
 
 def resize_rgb(img: np.ndarray, size: int) -> np.ndarray:
+    """Resize HxWx3 camera frame. LeRobot OpenCV default is RGB."""
     if img.ndim == 2:
-        img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-    if img.shape[2] == 3:
-        # OpenCV cams often BGR; leave as-is for cosmos (training used RGB via dataset).
-        pass
+        img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     return cv2.resize(img, (size, size), interpolation=cv2.INTER_AREA)
 
 
 def front_wrist_concat(obs: dict[str, Any], size: int = 256) -> np.ndarray:
+    """Return front|wrist concat in RGB (matches training / cosmos decode)."""
     front = resize_rgb(np.asarray(obs["front"]), size)
     wrist = resize_rgb(np.asarray(obs["wrist"]), size)
     return np.concatenate([front, wrist], axis=1)
 
 
-def write_concat_mp4(path: Path, frame_bgr: np.ndarray, fps: int = 30, n_frames: int = 8) -> None:
+def write_concat_mp4(path: Path, frame_rgb: np.ndarray, fps: int = 30, n_frames: int = 8) -> None:
+    """Write RGB frame(s) to mp4. Converts to BGR for OpenCV VideoWriter."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    h, w = frame_bgr.shape[:2]
+    h, w = frame_rgb.shape[:2]
     writer = cv2.VideoWriter(
         str(path),
         cv2.VideoWriter_fourcc(*"mp4v"),
         fps,
         (w, h),
     )
+    bgr = cv2.cvtColor(frame_rgb, cv2.COLOR_RGB2BGR)
     for _ in range(n_frames):
-        writer.write(frame_bgr)
+        writer.write(bgr)
     writer.release()
+
+
+def write_frames_mp4(path: Path, frames_rgb: list[np.ndarray], fps: int = 30) -> None:
+    """Write a list of HxWx3 RGB uint8 frames to mp4 (BGR for VideoWriter)."""
+    if not frames_rgb:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    h, w = frames_rgb[0].shape[:2]
+    writer = cv2.VideoWriter(
+        str(path),
+        cv2.VideoWriter_fourcc(*"mp4v"),
+        float(fps),
+        (w, h),
+    )
+    for fr in frames_rgb:
+        if fr.shape[0] != h or fr.shape[1] != w:
+            fr = cv2.resize(fr, (w, h), interpolation=cv2.INTER_AREA)
+        writer.write(cv2.cvtColor(fr, cv2.COLOR_RGB2BGR))
+    writer.release()
+    print(f"[video] wrote {path}  frames={len(frames_rgb)}  {w}x{h}@{fps}fps")
 
 
 # ---------------------------------------------------------------------------
@@ -285,7 +337,7 @@ class ZerosPolicy(PolicyBackend):
 
 
 class CosmosWAMPolicy(PolicyBackend):
-    """Cold-start cosmos_framework.scripts.inference per chunk (correct but slow)."""
+    """Cosmos Action WAM — warm resident worker by default (cold CLI optional)."""
 
     name = "cosmos"
 
@@ -299,6 +351,7 @@ class CosmosWAMPolicy(PolicyBackend):
         prompt: str = DEFAULT_PROMPT,
         stats_path: Path = DEFAULT_STATS,
         work_dir: Path | None = None,
+        warm: bool = True,
     ):
         self.export_dir = export_dir
         self.framework_python = framework_python
@@ -309,7 +362,133 @@ class CosmosWAMPolicy(PolicyBackend):
         self.mean, self.std = load_meanstd(stats_path)
         self.work_dir = work_dir or (_LAB / "outputs" / "rollout_cosmos_tmp")
         self.work_dir.mkdir(parents=True, exist_ok=True)
+        self.warm = warm
         self._n = 0
+        self._proc: subprocess.Popen[str] | None = None
+        self._worker_script = _LAB / "scripts" / "cosmos_wam_worker.py"
+
+    def close(self) -> None:
+        proc = self._proc
+        self._proc = None
+        if proc is None:
+            return
+        try:
+            if proc.stdin and proc.poll() is None:
+                proc.stdin.write(json.dumps({"cmd": "shutdown"}) + "\n")
+                proc.stdin.flush()
+                proc.wait(timeout=30)
+        except Exception as e:  # noqa: BLE001
+            print(f"[policy:cosmos] worker shutdown: {e}")
+            try:
+                proc.kill()
+            except Exception:  # noqa: BLE001
+                pass
+
+    def _ensure_worker(self) -> None:
+        if self._proc is not None and self._proc.poll() is None:
+            return
+        if not self._worker_script.is_file():
+            raise FileNotFoundError(f"warm worker missing: {self._worker_script}")
+        scratch = self.work_dir / "warm_scratch"
+        scratch.mkdir(parents=True, exist_ok=True)
+        cmd = [
+            str(self.framework_python),
+            "-u",
+            str(self._worker_script),
+            "--checkpoint-path",
+            str(self.export_dir),
+            "--scratch-dir",
+            str(scratch),
+            "--resolution",
+            str(self.image_size),
+            "--fps",
+            str(self.fps),
+        ]
+        print(f"[policy:cosmos] starting warm worker (load once):\n  {' '.join(cmd)}")
+        env = os.environ.copy()
+        env["PYTHONUNBUFFERED"] = "1"
+        self._proc = subprocess.Popen(
+            cmd,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=None,  # inherit → user sees load progress
+            text=True,
+            bufsize=1,
+            env=env,
+        )
+        assert self._proc.stdout is not None
+        # Wait until ready (or error). Model load can take minutes.
+        while True:
+            line = self._proc.stdout.readline()
+            if not line:
+                code = self._proc.poll()
+                raise RuntimeError(f"warm worker exited before ready (code={code})")
+            try:
+                msg = json.loads(line)
+            except json.JSONDecodeError:
+                # Non-protocol noise should not appear on stdout; ignore if any.
+                print(f"[policy:cosmos] worker stdout (ignored): {line.rstrip()}")
+                continue
+            if msg.get("event") == "ready":
+                print("[policy:cosmos] warm worker ready")
+                return
+            if msg.get("event") == "error" or msg.get("ok") is False:
+                raise RuntimeError(f"warm worker failed to start: {msg}")
+
+    def _infer_cold(self, sample_path: Path, out_dir: Path) -> Path:
+        cmd = [
+            str(self.framework_python),
+            "-m",
+            "cosmos_framework.scripts.inference",
+            "--checkpoint-path",
+            str(self.export_dir),
+            "-i",
+            str(sample_path),
+            "-o",
+            str(out_dir),
+            "--parallelism-preset",
+            "latency",
+            "--no-guardrails",
+            "--resolution",
+            str(self.image_size),
+            "--fps",
+            str(self.fps),
+        ]
+        print(f"[policy:cosmos:cold] {' '.join(cmd)}")
+        subprocess.run(cmd, check=True, env=os.environ.copy())
+        so = next(out_dir.rglob("sample_outputs.json"), None)
+        if so is None:
+            raise FileNotFoundError(f"no sample_outputs.json under {out_dir}")
+        return so
+
+    def _infer_warm(self, sample_path: Path, out_dir: Path) -> Path:
+        self._ensure_worker()
+        assert self._proc is not None and self._proc.stdin and self._proc.stdout
+        rid = f"{self._n}"
+        req = {
+            "cmd": "infer",
+            "id": rid,
+            "input": str(sample_path),
+            "output_dir": str(out_dir),
+        }
+        print(f"[policy:cosmos:warm] infer id={rid} input={sample_path}")
+        self._proc.stdin.write(json.dumps(req) + "\n")
+        self._proc.stdin.flush()
+        while True:
+            line = self._proc.stdout.readline()
+            if not line:
+                raise RuntimeError("warm worker died during infer")
+            try:
+                msg = json.loads(line)
+            except json.JSONDecodeError:
+                print(f"[policy:cosmos] worker stdout (ignored): {line.rstrip()}")
+                continue
+            if msg.get("event") != "done" or str(msg.get("id")) != rid:
+                print(f"[policy:cosmos] unexpected worker msg: {msg}")
+                continue
+            if not msg.get("ok"):
+                raise RuntimeError(f"warm infer failed: {msg.get('error')}")
+            return Path(msg["sample_outputs"])
 
     def infer_chunk(self, obs: dict[str, Any], out_actions_path: Path) -> np.ndarray:
         self._n += 1
@@ -336,32 +515,12 @@ class CosmosWAMPolicy(PolicyBackend):
         sample_path.write_text(json.dumps(sample, indent=2) + "\n")
         out_dir = step_dir / "wam_out"
         out_dir.mkdir(exist_ok=True)
-        cmd = [
-            str(self.framework_python),
-            "-m",
-            "cosmos_framework.scripts.inference",
-            "--checkpoint-path",
-            str(self.export_dir),
-            "-i",
-            str(sample_path),
-            "-o",
-            str(out_dir),
-            "--parallelism-preset",
-            "latency",
-            "--no-guardrails",
-            "--resolution",
-            str(self.image_size),
-            "--fps",
-            str(self.fps),
-        ]
-        print(f"[policy:cosmos] {' '.join(cmd)}")
-        env = os.environ.copy()
-        # Prefer lab env already sourced by wrapper shell
-        subprocess.run(cmd, check=True, env=env)
-        # Find sample_outputs.json
-        so = next(out_dir.rglob("sample_outputs.json"), None)
-        if so is None:
-            raise FileNotFoundError(f"no sample_outputs.json under {out_dir}")
+
+        if self.warm:
+            so = self._infer_warm(sample_path, out_dir)
+        else:
+            so = self._infer_cold(sample_path, out_dir)
+
         pred_n = extract_wam_action(so)
         pred = denorm_actions(pred_n, self.mean, self.std)
         if len(pred) > self.chunk:
@@ -519,8 +678,17 @@ def run_trial(
     if cfg.interactive:
         input(f"  Scene ready for layout={layout}? Enter to continue / Ctrl-C abort: ")
 
-    video_path = video_dir / f"{trial_id}.mp4"
-    # lightweight: record first concat frame only as still-mp4 for wiring
+    video_path = video_dir / f"{trial_id}_eval.mp4"
+    # Eval video: front|wrist concat recorded at each control step during execute.
+    eval_frames: list[np.ndarray] = []
+    eval_size = 256  # match policy view; easy to eyeball
+
+    def _record_obs(o: dict[str, Any]) -> None:
+        try:
+            eval_frames.append(front_wrist_concat(o, eval_size))
+        except Exception as e:  # noqa: BLE001 — never abort motion for video
+            print(f"[video] skip frame: {e}")
+
     t0 = time.time()
     success: bool | None = None
     failure: str | None = None
@@ -537,15 +705,13 @@ def run_trial(
                 break
 
             obs = robot.get_obs()
-            if n_chunks == 0:
-                concat = front_wrist_concat(obs, 256)
-                write_concat_mp4(video_path, concat, fps=10, n_frames=10)
+            _record_obs(obs)
 
             actions_path = logger.out_dir / f"{trial_id}_chunk{n_chunks:02d}_actions.json"
             actions = policy.infer_chunk(obs, actions_path)
             last_actions_path = str(actions_path)
             n_exec = min(cfg.execute_steps, len(actions))
-            robot.execute_chunk(actions[:n_exec], cfg.control_hz)
+            robot.execute_chunk(actions[:n_exec], cfg.control_hz, on_step=_record_obs)
             n_chunks += 1
 
             if cfg.interactive:
@@ -563,6 +729,8 @@ def run_trial(
     except KeyboardInterrupt:
         print("  interrupted")
         failure = failure or "estop"
+
+    write_frames_mp4(video_path, eval_frames, fps=int(cfg.control_hz))
 
     dur = time.time() - t0
     if success is None and cfg.interactive:
@@ -582,10 +750,10 @@ def run_trial(
         success=success,
         failure_code=failure,
         duration_s=dur,
-        notes=f"chunks={n_chunks}",
+        notes=f"chunks={n_chunks} eval_frames={len(eval_frames)}",
         video_path=str(video_path),
         action_raw_path=last_actions_path,
-        meta={"n_chunks": n_chunks, "timeout_s": cfg.timeout_s},
+        meta={"n_chunks": n_chunks, "timeout_s": cfg.timeout_s, "eval_frames": len(eval_frames)},
     )
     logger.append(rec)
     return rec
@@ -603,6 +771,7 @@ def build_policy(args: argparse.Namespace, work_dir: Path) -> PolicyBackend:
             prompt=args.prompt,
             stats_path=Path(args.stats_path),
             work_dir=work_dir / "cosmos_steps",
+            warm=bool(args.cosmos_warm),
         )
     if args.policy in ("pi0", "pi0_80k"):
         return Pi0PolicyBackend(
@@ -654,7 +823,8 @@ def main() -> None:
     p.add_argument("--robot-id", default=os.environ.get("SO101_ID", "so101_follower"))
     p.add_argument("--cam-front", default=os.environ.get("CAM_FRONT", "0"))
     p.add_argument("--cam-wrist", default=os.environ.get("CAM_WRIST", "1"))
-    p.add_argument("--cam-side", default=os.environ.get("CAM_SIDE", "2"))
+    # Empty = do not open side (Cosmos action-policy is front|wrist only).
+    p.add_argument("--cam-side", default=os.environ.get("CAM_SIDE", ""))
     p.add_argument("--max-relative-target", type=float, default=15.0)
     p.add_argument("--calibrate", action="store_true")
     p.add_argument(
@@ -676,6 +846,12 @@ def main() -> None:
     )
     p.add_argument("--stats-path", default=str(DEFAULT_STATS))
     p.add_argument("--device", default="cuda")
+    p.add_argument(
+        "--cosmos-warm",
+        action=argparse.BooleanOptionalAction,
+        default=os.environ.get("COSMOS_WARM", "1") not in ("0", "false", "False"),
+        help="Keep Cosmos weights resident across chunks (default on). Use --no-cosmos-warm for cold CLI.",
+    )
     p.add_argument(
         "--lerobot-src",
         default=os.environ.get("LEROBOT_SRC", "/home/july/lerobot_alohamini/src"),
@@ -729,6 +905,8 @@ def main() -> None:
     policy = build_policy(args, out_dir)
     logger = TrialLogger(out_dir)
     mode = "dry_run" if args.dry_run else "real"
+    if isinstance(policy, CosmosWAMPolicy):
+        print(f"[policy:cosmos] warm={policy.warm}")
 
     loop = LoopConfig(
         n_trials=args.n_trials,
@@ -756,6 +934,8 @@ def main() -> None:
             )
     finally:
         robot.disconnect()
+        if hasattr(policy, "close"):
+            policy.close()  # type: ignore[attr-defined]
 
     summary = logger.summarize()
     (out_dir / "hw_probe.json").write_text(json.dumps(probe, indent=2) + "\n")
@@ -764,6 +944,8 @@ def main() -> None:
     print(f">>> summary: {out_dir / 'summary.json'}")
     if args.dry_run:
         print("NOTE: dry-run mock robot — success rate is not real SO-101 SR.")
+    if isinstance(policy, CosmosWAMPolicy) and policy.warm:
+        print("NOTE: Cosmos used warm resident worker (load once, replan per chunk).")
 
 
 if __name__ == "__main__":

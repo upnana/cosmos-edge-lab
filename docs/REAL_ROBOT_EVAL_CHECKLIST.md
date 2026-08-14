@@ -9,8 +9,10 @@
 
 - 离线：`scripts/rollout_action_offline.py`
 - 真机闭环驱动：`scripts/so101_rollout_driver.py`（LeRobot SO101Follower + Cosmos/π0）
+- 热启动 worker：`scripts/cosmos_wam_worker.py`
 - 包装：`scripts/rollout_action_real.sh`
 - 公共：`scripts/rollout_common.py`
+- **逐步手册（推荐）**：[`BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md`](BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md)
 
 > **硬件注意：** 当前 H100 训练机通常 **无** `/dev/ttyUSB*` / `/dev/video*`。  
 > 在此机用 `DRY_RUN=1` 验链路；**真机 SR** 须在接好臂与相机的 bench PC 上 `FORCE_REAL=1` 跑。

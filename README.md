@@ -35,6 +35,7 @@ cosmos-edge-lab/          ← 你的实验科学
 | 文档 | 主题 |
 |------|------|
 | [`docs/RESULTS_SUMMARY.md`](docs/RESULTS_SUMMARY.md) | **结果汇总**（Vision I2V + Action WAM/FD） |
+| [`docs/BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md`](docs/BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md) | **Bench 真机闭环逐步手册**（HF→domain→相机→dry-run→冷/热启动→坑→denorm→eval） |
 | [`docs/REAL_ROBOT_EVAL_CHECKLIST.md`](docs/REAL_ROBOT_EVAL_CHECKLIST.md) | **真机 SR checklist** + 离线/真机 rollout 骨架 |
 | [`docs/BENCH_PC_OFFLINE_INFERENCE.md`](docs/BENCH_PC_OFFLINE_INFERENCE.md) | **Bench PC（wenxingnan）离线 WAM**：HF export、domain=22、front\|wrist@256、denorm |
 | [`docs/RESOLUTION_CONFIG.md`](docs/RESOLUTION_CONFIG.md) | **分辨率**：采集 640×480 vs 策略输入 256×256；仿真/论文怎么写 |
@@ -56,6 +57,17 @@ cosmos-edge-lab/          ← 你的实验科学
 配方目录：[`experiments/stack3cam_wam/`](experiments/stack3cam_wam/)
 
 对照基线（同任务、不同模型族）：π0 3-cam on LeRobot（`upna/pi0_stack_white_blue_black_3cam_*`）。
+
+### 真机闭环预览（wenxingnan）
+
+热启动 Action-policy 闭环一圈的 **相机 eval**（front\|wrist @256 concat；RGB 已校正）。  
+这是执行画面，不是模型“生成视频”；动作在 `*_actions.json`。
+
+https://github.com/upnana/cosmos-edge-lab/blob/main/docs/assets/real_robot_eval/cosmos_action_warm_t001_eval.mp4
+
+![warm eval poster](docs/assets/real_robot_eval/cosmos_action_warm_t001_eval.jpg)
+
+完整步骤见 [`docs/BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md`](docs/BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md)。
 
 ## 环境准备
 
