@@ -1,12 +1,30 @@
 # Cosmos-Edge Lab — 结果汇总
 
-> 更新：2026-08-12  
+> 更新：2026-08-14  
 > 底座：Cosmos3-Edge；数据：SO-101 `stack_3blocks_white_blue_black_3cam`
 
-本文汇总本仓库已落盘的 **Vision I2V** 与 **Action-Policy WAM/FD** 证据。  
+本文汇总本仓库已落盘的 **Vision I2V** 与 **Action-Policy WAM/FD** 证据，以及 bench PC **真机闭环 smoke**。  
 不宣称对 π0 / 官方 RoboLab 的 SOTA。
 
-真机 closed-loop SR（vs π0）：驱动已接好（`scripts/so101_rollout_driver.py`），但 **本 H100 无臂/相机**，SR 数字需在 bench PC 上 `FORCE_REAL=1` 跑完后填入。协议见 [`REAL_ROBOT_EVAL_CHECKLIST.md`](REAL_ROBOT_EVAL_CHECKLIST.md)。
+真机 closed-loop：**链路已在 wenxingnan 跑通（热启动 + eval 视频）**；正式 **SR 尚未标注**（仅 1 trial、`success=null`）。  
+协议见 [`REAL_ROBOT_EVAL_CHECKLIST.md`](REAL_ROBOT_EVAL_CHECKLIST.md)；逐步手册见 [`BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md`](BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md)。
+
+---
+
+## 0. 真机闭环 smoke（wenxingnan，2026-08-14）
+
+| 项 | 记录 |
+|----|------|
+| CKPT | HF `upna/action_stack3cam_action_policy_edge_2000`（训练 **2000** iter） |
+| Mode | `FORCE_REAL` + **warm**（`cosmos_wam_worker` 常驻） |
+| STEPS | chunk=**32**，execute=**16**，max_chunks=**20**，hz=30 |
+| Trial / “episode” | 真机 **trial=1**（不是数据集 ep111） |
+| Wall time | **~65.6 s** / 20 chunks |
+| Latency | 热稳态采样 **~32 it/s**（~0.9 s/30-step）；chunk 间隔中位 **~2–3 s**；冷启动未做对照计时 |
+| SR | **未报**（`INTERACTIVE=0`，未标成功/失败） |
+| 预览 | [`assets/real_robot_eval/`](assets/real_robot_eval/README.md) |
+
+冷 vs 热：手册 Step 6/7；热启动后不再每 chunk 重新 load 权重。
 
 ---
 
@@ -58,7 +76,7 @@
 - **WAM PSNR**：同时预测动作+视频，相对 GT 的视频相似度。  
 - **FD PSNR**：给定 GT 动作只预测视频（更偏世界模型）。  
 - 与官方 Cosmos action-cond 公开 PSNR（约 21–25 dB）**不可直接对标**（数据/模型/机臂不同）。  
-- **真机 closed-loop SR** 仍待做；官方 Edge-Policy 主报 **RoboLab 仿真 SR ~22.9%**，非本 SO-101 任务。
+- **真机 closed-loop**：bench 已 smoke（见 §0）；**正式 SR 仍待 ≥20 trials 标注**。官方 Edge-Policy 主报 **RoboLab 仿真 SR ~22.9%**，非本 SO-101 任务。
 
 ---
 
@@ -70,7 +88,7 @@
 | Action L1 | 会不会动手（open-loop） |
 | WAM PSNR | 边动手边想象画面 |
 | FD PSNR | 用对的动作推画面 |
-| 真机 SR（未做） | 叠块成不成功；对标 π0 |
+| 真机 SR（smoke 已通，正式未标） | 叠块成不成功；对标 π0；见 §0 |
 
 ---
 

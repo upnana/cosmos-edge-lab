@@ -229,6 +229,29 @@ FORCE_REAL=1 INTERACTIVE=0 N_TRIALS=1 POLICY=cosmos \
 outputs/rollout_real/cosmos_20260814_112525_3523384/
 ```
 
+### 7.1 本机 run card（已落盘 / 已推文档）
+
+| 项 | 值 |
+|----|-----|
+| 机器 | wenxingnan（bench PC，2×3090） |
+| CKPT / export | `upna/action_stack3cam_action_policy_edge_2000` → 本机 `.../outputs/export/action_stack3cam_action_policy_edge_2000` |
+| 训练 iter | `iter_000002000`（job `stack3cam_action_policy_edge_2000`） |
+| Domain | `so101_follower` id=**22**，action dim=**6**，meanstd denorm |
+| 相机 | front=`/dev/video0`，wrist=`/dev/video2`，side 不用；拼 **512×256** |
+| 串口 | `/dev/ttyACM2` |
+| Episode / trial | **真机 trial 1**（非数据集 ep 编号）；`layout=0` |
+| STEPS | `CHUNK=32`，`EXECUTE_STEPS=16`，`MAX_CHUNKS=20`，`CONTROL_HZ=30`，`TIMEOUT_S=600` |
+| 模式 | `FORCE_REAL=1`，`INTERACTIVE=0`，**热启动** `COSMOS_WARM=1` |
+| 墙钟 | trial **~65.6 s**（含执行）；约 **20** 次 replan |
+| Latency（热） | 首 chunk 含 load，采样约 **~6 s / 30 step**；稳态采样 **~32 it/s**（~0.9 s / 30 step）；相邻 chunk 间隔中位 **~2–3 s**（含执行） |
+| Latency（冷） | 每 chunk 重新 load（通常 **数十秒～1+ 分钟**）；本 run **未**做对照计时 |
+| Eval 视频 | 340 帧 @30fps ≈11.3 s 画面（仅执行步；推理等待未录进时间轴密度） |
+| **SR** | **`null`（未标注）**：`INTERACTIVE=0` 未人工标 y/n；**不能**当成功率 |
+
+仓库内展示：[`assets/real_robot_eval/README.md`](assets/real_robot_eval/README.md)
+
+> 正式 SR 需 ≥20 trials + 人工/协议标注；见 [`REAL_ROBOT_EVAL_CHECKLIST.md`](REAL_ROBOT_EVAL_CHECKLIST.md)。
+
 仓库内展示用（色通道已校正；**打开下方 Markdown 页即可播放**，勿点裸 mp4 blob）：
 
 - 预览页：[`assets/real_robot_eval/README.md`](assets/real_robot_eval/README.md)
