@@ -60,12 +60,18 @@ cosmos-edge-lab/          ← 你的实验科学
 
 ### 真机闭环预览（wenxingnan）
 
-热启动 Action-policy 闭环一圈的 **相机 eval**（front\|wrist @256 concat；RGB 已校正）。  
+> 打开本 README 或 [`docs/assets/real_robot_eval/`](docs/assets/real_robot_eval/README.md) 即可浏览播放；  
+> **不要**点开单独的 `.mp4` blob（GitHub 常只给 View raw）。
+
+热启动 Action-policy 闭环一圈的 **相机 eval**（front\|wrist @256；RGB 已校正）。  
 这是执行画面，不是模型“生成视频”；动作在 `*_actions.json`。
 
-https://github.com/upnana/cosmos-edge-lab/blob/main/docs/assets/real_robot_eval/cosmos_action_warm_t001_eval.mp4
+![warm eval](docs/assets/real_robot_eval/cosmos_action_warm_t001_eval.gif)
 
-![warm eval poster](docs/assets/real_robot_eval/cosmos_action_warm_t001_eval.jpg)
+<video src="docs/assets/real_robot_eval/cosmos_action_warm_t001_eval_web.mp4" controls width="720" preload="metadata">
+  看上方 GIF，或
+  <a href="docs/assets/real_robot_eval/cosmos_action_warm_t001_eval_web.mp4">下载 mp4</a>
+</video>
 
 完整步骤见 [`docs/BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md`](docs/BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md)。
 

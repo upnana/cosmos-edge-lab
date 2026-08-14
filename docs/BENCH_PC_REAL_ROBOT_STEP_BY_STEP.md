@@ -229,9 +229,17 @@ FORCE_REAL=1 INTERACTIVE=0 N_TRIALS=1 POLICY=cosmos \
 outputs/rollout_real/cosmos_20260814_112525_3523384/
 ```
 
-仓库内展示用（色通道已校正）视频：
+仓库内展示用（色通道已校正；**打开下方 Markdown 页即可播放**，勿点裸 mp4 blob）：
 
-[`docs/assets/real_robot_eval/cosmos_action_warm_t001_eval.mp4`](assets/real_robot_eval/cosmos_action_warm_t001_eval.mp4)
+- 预览页：[`assets/real_robot_eval/README.md`](assets/real_robot_eval/README.md)
+- GIF：[`assets/real_robot_eval/cosmos_action_warm_t001_eval.gif`](assets/real_robot_eval/cosmos_action_warm_t001_eval.gif)
+- MP4（H.264）：[`assets/real_robot_eval/cosmos_action_warm_t001_eval_web.mp4`](assets/real_robot_eval/cosmos_action_warm_t001_eval_web.mp4)
+
+![warm eval](assets/real_robot_eval/cosmos_action_warm_t001_eval.gif)
+
+<video src="assets/real_robot_eval/cosmos_action_warm_t001_eval_web.mp4" controls width="720" preload="metadata">
+  <a href="assets/real_robot_eval/cosmos_action_warm_t001_eval_web.mp4">cosmos_action_warm_t001_eval_web.mp4</a>
+</video>
 
 ---
 
