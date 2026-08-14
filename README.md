@@ -58,13 +58,49 @@ cosmos-edge-lab/          ← 你的实验科学
 
 对照基线（同任务、不同模型族）：π0 3-cam on LeRobot（`upna/pi0_stack_white_blue_black_3cam_*`）。
 
+### 名词（先分清）
+
+| 词 | 本实验里指什么 |
+|----|----------------|
+| **iter / step** | 优化器更新次数。Action-policy 权重对应 **`iter_000002000`（2000）**，不是 “epoch=2000” |
+| **epoch** | 扫完训练集一遍；本配方多用 **iter** 存盘，README 不报 epoch 数 |
+| **episode（ep）** | 数据集里一条遥操作轨迹。离线评测主集 **ep111**（held-out / val） |
+| **trial** | **真机**闭环的一次摆场评测（与 ep 编号不是一回事） |
+| **chunk** | 一次预测的动作长度；训练 **32**（~1.1s@30fps）；评测还可外推 96/240 |
+| **GT \| WAM \| FD** | 左：真值相机；中：WAM（动作+视频一起预测）；右：FD（给定 GT 动作只预测视频） |
+
+### 离线 GT \| WAM \| FD（推荐看这条）
+
+> 打开 README 即可预览；完整说明见 [`docs/ACTION_POLICY_OFFLINE_WAM.md`](docs/ACTION_POLICY_OFFLINE_WAM.md)。
+
+选用 **held-out ep111 · ~3.2s（chunk=96）**：比 1s 更好看出叠块动态，比 8s 更干净。  
+（指标最好、对齐训练的是 **1s/chunk=32**：Action L1 **7.62°**，WAM/FD PSNR ~17 dB。）
+
+| 项 | 值 |
+|----|-----|
+| CKPT | `stack3cam_action_policy_edge_2000` / **iter 2000** |
+| Episode | **111**（held-out） |
+| 窗口 | `start_frame=274`，97 帧 @30fps ≈ **3.2s** |
+| Action L1（denorm°） | 17.7（外推长于训练 chunk，误差变大属预期） |
+| WAM / FD PSNR | ~16.9 / ~16.8 dB |
+
+![GT \| WAM \| FD · ep111 · 3s](docs/assets/action_wam_ep111/3s/gt_wam_fd.gif)
+
+<video src="docs/assets/action_wam_ep111/3s/gt_wam_fd_web.mp4" controls width="960" preload="metadata">
+  看上方 GIF，或
+  <a href="docs/assets/action_wam_ep111/3s/gt_wam_fd_web.mp4">下载 mp4</a>
+</video>
+
+训练对齐短窗（1s）预览：[`docs/assets/action_wam_ep111/1s/`](docs/ACTION_POLICY_OFFLINE_WAM.md#1--11schunk32对齐训练)。
+
 ### 真机闭环预览（wenxingnan）
 
 > 打开本 README 或 [`docs/assets/real_robot_eval/`](docs/assets/real_robot_eval/README.md) 即可浏览播放；  
 > **不要**点开单独的 `.mp4` blob（GitHub 常只给 View raw）。
 
 热启动 Action-policy 闭环一圈的 **相机 eval**（front\|wrist @256；RGB 已校正）。  
-这是执行画面，不是模型“生成视频”；动作在 `*_actions.json`。
+这是执行画面，不是模型“生成视频”；动作在 `*_actions.json`。  
+对应 **真机 trial=1**（不是 ep111）。
 
 ![warm eval](docs/assets/real_robot_eval/cosmos_action_warm_t001_eval.gif)
 

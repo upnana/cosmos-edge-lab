@@ -34,8 +34,8 @@
 
 ![1s preview](assets/action_wam_ep111/1s/gt_wam_fd.gif)
 
-<video src="assets/action_wam_ep111/1s/gt_wam_fd.mp4" controls width="960" preload="metadata">
-  <a href="assets/action_wam_ep111/1s/gt_wam_fd.mp4">gt_wam_fd.mp4</a>
+<video src="assets/action_wam_ep111/1s/gt_wam_fd_web.mp4" controls width="960" preload="metadata">
+  <a href="assets/action_wam_ep111/1s/gt_wam_fd_web.mp4">gt_wam_fd_web.mp4</a>
 </video>
 
 ---
@@ -58,8 +58,8 @@
 
 ![3s preview](assets/action_wam_ep111/3s/gt_wam_fd.gif)
 
-<video src="assets/action_wam_ep111/3s/gt_wam_fd.mp4" controls width="960" preload="metadata">
-  <a href="assets/action_wam_ep111/3s/gt_wam_fd.mp4">gt_wam_fd.mp4</a>
+<video src="assets/action_wam_ep111/3s/gt_wam_fd_web.mp4" controls width="960" preload="metadata">
+  <a href="assets/action_wam_ep111/3s/gt_wam_fd_web.mp4">gt_wam_fd_web.mp4</a>
 </video>
 
 ---
