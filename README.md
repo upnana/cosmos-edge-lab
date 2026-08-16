@@ -37,7 +37,7 @@ cosmos-edge-lab/          ← 你的实验与记录
 | [`docs/RESULTS_SUMMARY.md`](docs/RESULTS_SUMMARY.md) | **结果汇总**（视觉预测 + 动作 WAM/FD） |
 | [`docs/BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md`](docs/BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md) | **真机闭环逐步手册**（下权重→域名→相机→空跑→冷/热启动→踩坑→反归一化→评测） |
 | [`docs/REAL_ROBOT_EVAL_CHECKLIST.md`](docs/REAL_ROBOT_EVAL_CHECKLIST.md) | **真机成功率检查清单** + 离线/真机 rollout 骨架 |
-| [`docs/BENCH_PC_OFFLINE_INFERENCE.md`](docs/BENCH_PC_OFFLINE_INFERENCE.md) | **实验台离线推理**（HF 导出、domain=22、前视\|腕部@256、反归一化） |
+| [`docs/BENCH_PC_OFFLINE_INFERENCE.md`](docs/BENCH_PC_OFFLINE_INFERENCE.md) | **离线推理**（HF 导出、domain=22、前视\|腕部@256、反归一化） |
 | [`docs/RESOLUTION_CONFIG.md`](docs/RESOLUTION_CONFIG.md) | **分辨率**：采集 640×480 vs 策略输入 256×256；仿真/论文怎么写 |
 | [`docs/GPU_MONITOR.md`](docs/GPU_MONITOR.md) | 训练/评测 GPU 利用率与显存采样 |
 | [`docs/ACTION_POLICY_OFFLINE_WAM.md`](docs/ACTION_POLICY_OFFLINE_WAM.md) | 动作策略离线 WAM/FD（第 111 条轨迹） |
@@ -91,7 +91,7 @@ cosmos-edge-lab/          ← 你的实验与记录
 
 训练对齐的短窗（约 1 秒）预览见：[`docs/ACTION_POLICY_OFFLINE_WAM.md`](docs/ACTION_POLICY_OFFLINE_WAM.md)。
 
-### 真机闭环预览（实验台 wenxingnan）
+### 真机闭环预览
 
 > 打开本页或 [`docs/assets/real_robot_eval/`](docs/assets/real_robot_eval/README.md) 即可浏览播放；  
 > **不要**单独点开 `.mp4` 文件页（GitHub 经常只显示「查看原始文件」）。
