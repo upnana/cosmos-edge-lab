@@ -1,15 +1,15 @@
-# 真机热启动 eval 预览
+# 真机热启动评测预览
 
-> **打开本页即可播放**（勿依赖单独打开 `.mp4` 的 blob 页；GitHub 对裸 mp4 常只显示 View raw）。
+> **打开本页即可播放**（不要单独打开 `.mp4` 文件页；GitHub 对裸视频页常只显示「查看原始文件」）。
 
-相机 eval：front\|wrist @256 concat，色通道已校正。  
-这是执行画面，不是模型生成视频。
+相机评测：前视 \| 腕部，各缩到 256 后横拼；颜色通道已校正。  
+这是机械臂执行时的真实画面，不是模型生成的视频。
 
-![warm eval GIF](cosmos_action_warm_t001_eval.gif)
+![真机热启动评测动图](cosmos_action_warm_t001_eval.gif)
 
 <video src="cosmos_action_warm_t001_eval_web.mp4" controls width="720" preload="metadata">
-  浏览器不支持 video 时请看上方 GIF，或下载
-  <a href="cosmos_action_warm_t001_eval_web.mp4">cosmos_action_warm_t001_eval_web.mp4</a>
+  浏览器不支持视频标签时，请看上方动图，或
+  <a href="cosmos_action_warm_t001_eval_web.mp4">下载视频</a>
 </video>
 
 完整步骤：[`../../BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md`](../../BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md)
