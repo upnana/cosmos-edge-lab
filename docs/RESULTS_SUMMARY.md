@@ -6,6 +6,8 @@
 本文汇总本仓库已落盘的 **Vision I2V** 与 **Action-Policy WAM/FD** 证据，以及 bench PC **真机闭环 smoke**。  
 不宣称对 π0 / 官方 RoboLab 的 SOTA。
 
+第一轮实验分析（训练量 steps↔epochs、是否够训、真机缺口）：[`ROUND1_EXPERIMENT_ANALYSIS.md`](ROUND1_EXPERIMENT_ANALYSIS.md)。
+
 真机 closed-loop：**链路已在 wenxingnan 跑通（热启动 + eval 视频）**；正式 **SR 尚未标注**（仅 1 trial、`success=null`）。  
 协议见 [`REAL_ROBOT_EVAL_CHECKLIST.md`](REAL_ROBOT_EVAL_CHECKLIST.md)；逐步手册见 [`BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md`](BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md)。
 
@@ -25,7 +27,6 @@
 | 预览 | [`assets/real_robot_eval/`](assets/real_robot_eval/README.md) |
 
 冷 vs 热：手册 Step 6/7；热启动后不再每 chunk 重新 load 权重。
-
 ---
 
 ## 1. Vision SFT → I2V（世界动力学）

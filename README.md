@@ -35,6 +35,7 @@ cosmos-edge-lab/          ← 你的实验与记录
 | 文档 | 主题 |
 |------|------|
 | [`docs/RESULTS_SUMMARY.md`](docs/RESULTS_SUMMARY.md) | **结果汇总**（视觉预测 + 动作 WAM/FD） |
+| [`docs/ROUND1_EXPERIMENT_ANALYSIS.md`](docs/ROUND1_EXPERIMENT_ANALYSIS.md) | **第一轮实验分析**（steps↔epochs、训练是否够、下一步） |
 | [`docs/BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md`](docs/BENCH_PC_REAL_ROBOT_STEP_BY_STEP.md) | **真机闭环逐步手册**（下权重→域名→相机→空跑→冷/热启动→踩坑→反归一化→评测） |
 | [`docs/REAL_ROBOT_EVAL_CHECKLIST.md`](docs/REAL_ROBOT_EVAL_CHECKLIST.md) | **真机成功率检查清单** + 离线/真机 rollout 骨架 |
 | [`docs/BENCH_PC_OFFLINE_INFERENCE.md`](docs/BENCH_PC_OFFLINE_INFERENCE.md) | **离线推理**（HF 导出、domain=22、前视\|腕部@256、反归一化） |
